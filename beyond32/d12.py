@@ -64,7 +64,6 @@ CLASS_SIZES_D12 = (1, 2, 2, 2, 2, 2, 1, 6, 6)
 TWOFOLD_TYPES = ("C2'", "C2''")
 
 ANGLE = sp.Symbol("phi", real=True)      # polar angle in the plane
-_U = sp.Symbol("u")                       # u = exp(i phi), for the Laurent bookkeeping
 
 
 def _canon3(e) -> sp.Expr:
@@ -147,7 +146,7 @@ def _identify(expr) -> D12Element:
     if sign not in (1, -1):
         raise ValueError(f"not an element of D12: {expr}")
     const = sp.expand(expr - sign * ANGLE)
-    q = sp.nsimplify(const / (2 * pi / N))
+    q = sp.Rational(sp.expand(const / (2 * pi / N)))      # exact: pi cancels
     if not q.is_Integer:
         raise ValueError(f"not an element of D12: {expr}")
     return D12Element("R" if sign == 1 else "P", int(q) % N)

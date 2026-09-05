@@ -94,7 +94,8 @@ def m_A_table(lmax: int = 30) -> List[int]:
 
 def nontrivial_degrees(lmax: int = 30) -> List[int]:
     """The degrees l >= 1 with m_A(l) > 0 (paper: l = 6, 10, 12, 15, 16, 18, 20, 21, 22,
-    24, ...): the degrees at which an "extended-s" A_g gap function of degree l exists."""
+    24, ...): the degrees at which an I-invariant harmonic exists (A_g of I_h for even l,
+    the "extended-s" gap functions; A_u for odd l)."""
     return [l for l in range(1, lmax + 1) if m_A(l) > 0]
 
 

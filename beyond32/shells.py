@@ -171,11 +171,14 @@ def _fixed_counts(kpts: Tuple[tuple, ...]) -> Tuple[Tuple[int, ...], Tuple[int, 
     the number of points with R p = p and the number with R p = -p (i.e. -R p = p).  Every
     image R p is computed once, exactly, and compared exactly."""
     G = icosahedral_group()
+    pset = set(kpts)
     proper, improper = [], []
     for kmat in G.kmatrices:
         n_fix = n_inv = 0
         for p in kpts:
             q = _apply(kmat, p)
+            if q not in pset:
+                raise ValueError("the point set is not invariant under I (not a union of orbits)")
             if q == p:
                 n_fix += 1
             elif _neg(q) == p:

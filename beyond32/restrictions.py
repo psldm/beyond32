@@ -49,7 +49,7 @@ from functools import lru_cache
 from typing import Dict, List, Sequence, Tuple
 
 import sympy as sp
-from sympy import Rational, S
+from sympy import S
 
 from ._exact import PHI, canon
 from .groups import (CHAR_I, CLASSES_I, IRREPS_I, CharacterTable, Rotation, generate_subgroup,
@@ -331,6 +331,8 @@ def restriction_table_data() -> Dict[str, object]:
 def cyclic_generator(n: int) -> Rotation:
     """The generator of C_n: the C5 about (phi, 1, 0), the C3 about (1, 1, 1) or the C2
     about z (the axes used throughout the paper)."""
+    if n not in CYCLIC_GENERATORS:
+        raise ValueError(f"no cyclic subgroup C{n} in the table; n must be one of {tuple(CYCLIC_GENERATORS)}")
     axis, cls = CYCLIC_GENERATORS[n]
     return rotation_about(axis, cls)
 

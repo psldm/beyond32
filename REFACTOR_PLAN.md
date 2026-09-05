@@ -60,7 +60,7 @@ literally.
 | `isotropy.py` | subgroups C2, C3, C5, D2, D3, D5, T of I with 1-dim characters; fixed spaces by SVD; R_wc, TR, min|Delta| | `gl.py` (`isotropy_table`) |
 | `shells.py` | permutation representations of I_h on the 12/20/30/60 orbits | `shells.py` (also the I-only decompositions) |
 | `d12.py` | D12 character table, m mod 12 -> irrep, enforced nodes | `d12.py` (+ Sym^2 E_m and the circle weak-coupling ratios 3/2, 1 quoted in Appendix B) |
-| (none) | LaTeX fragments, results.json, CLI | `latex.py`, `cli.py` |
+| (none) | LaTeX fragments, results.json, CLI | `latex.py`, `results.py`, `cli.py` |
 
 ## 4. Package layout (as requested)
 
@@ -73,7 +73,8 @@ CHANGELOG.md REPORT.md
 ```
 
 `_exact.py` is a private helper (field `QQ<sqrt5>`, `DomainMatrix` conversions, phi-form
-printing); it is not part of the public layout but keeps the exact arithmetic in one place.
+printing); it is not part of the requested layout but keeps the exact arithmetic in one place.
+`results.py` assembles `results.json` (plain data) from all modules; `latex.py` renders it.
 
 ## 5. Reference values pinned in the tests (literal)
 

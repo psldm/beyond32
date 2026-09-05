@@ -1071,7 +1071,9 @@ def h_invariants_at(e: np.ndarray) -> Dict[str, float]:
 def h_candidates() -> Dict[str, Dict[str, object]]:
     """The null-cone H states of Table 8: Y2,+-2 and Y2,+-1 about the C5, C3, C2 axes and the
     cyclic state x^2 + w y^2 + w^2 z^2 (both chiralities), with N2, N4G, N4H, Re C, Im C at
-    |eta| = 1, the stabiliser order and min|Delta|/max (legacy gl_final.py / gl_states.py)."""
+    |eta| = 1, the stabiliser order and min|Delta|/max (legacy gl_final.py / gl_states.py).
+    The real uniaxial state 3(a.n)^2 - 1 about C5 (I2 = 1, computed by legacy gl_states.py) is
+    appended for comparison; it is not a null-cone state and not part of Table 8."""
     om = np.exp(2j * np.pi / 3)
     cands = {}
     for k, a in candidate_axes().items():
@@ -1079,6 +1081,8 @@ def h_candidates() -> Dict[str, Dict[str, object]]:
         cands[f"Y21 about {k}"] = _Y21(a)
     cands["cyclic (T)"] = lambda Xg, Yg, Zg: Xg**2 + om * Yg**2 + om**2 * Zg**2
     cands["cyclic (T), other chirality"] = lambda Xg, Yg, Zg: Xg**2 + om**2 * Yg**2 + om * Zg**2
+    a5 = candidate_axes()["C5"]
+    cands["real uniaxial 3(a.n)^2-1 about C5"] = lambda Xg, Yg, Zg: 3 * (Xg * a5[0] + Yg * a5[1] + Zg * a5[2]) ** 2 - 1
     rows = {}
     for name, fn in cands.items():
         e = h_coordinates(fn)

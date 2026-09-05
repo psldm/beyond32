@@ -1,0 +1,116 @@
+# Refactoring report
+
+Companion code of *Beyond the 32: Superconducting Pairing Channels of the Icosahedral Group*
+(Eva Moss, 2026).  The development chain in `legacy/` (13 scripts, `exec` + pickles) was
+turned into the installable package `beyond32` (`pip install -e .`, `beyond32 all`).
+
+**Result: every reference value of the paper is reproduced; there is no discrepancy.**
+
+## 1. What was reproduced
+
+Exact values are compared exactly (sympy over Q(√5), or Q(√3, √5) where the normalised
+H basis brings in √3); numerical values to the precision quoted in the paper.  All of the
+following are pinned literally in `tests/` (101 tests) and checked by `beyond32 check`.
+
+| item | value | test |
+|---|---|---|
+| I: 60 rotations, class sizes [1,12,12,20,15], characters of A, T1, T2, G, H, orthonormal, Σd² = 60 | Table 1 | `test_groups` |
+| 2I: 120 quaternions, closed; classes by SU(2) angle with sizes [1,12,20,12,30,12,20,12,1]; dims [1,2,2,3,3,4,4,5,6]; spinor irreps −dim on −1; 2 ⊗ 2′ = G; Table 2 literally | Table 2 | `test_groups` |
+| five-fold axes = cyclic permutations of (±φ, ±1, 0); three-fold (1,±1,±1); two-fold x, y, z | Eq. 1 | `test_groups` |
+| branching ℓ = 0…6: A; T1; H; T2+G; G+H; T1+T2+H; A+T1+G+H (projectors and characters) | Table 3 | `test_harmonics` |
+| basis functions f_x, g_x, xyz, u_0, u_x, v_x, w_x in φ-form; harmonic; in their isotypic components | Eqs. 4–9 | `test_harmonics` |
+| P6 literally; harmonic and I-invariant; hexad identity Σ(a_i·n)⁶ = −(2/35) P6 + (6/7) r⁶ | Eqs. 10–11 | `test_harmonics` |
+| m_A(ℓ), ℓ ≤ 30 = [1,0,0,0,0,0,1,0,0,0,1,0,1,0,0,1,1,0,1,0,1,1,1,0,1,1,1,1,1,0,2] = coefficients of (1+t¹⁵)/((1−t⁶)(1−t¹⁰)); spectrum (0,1),(12,13),…,(60,122) | Eqs. 15–16 | `test_molien` |
+| restrictions to T, D5, D3 (characters) and D2 (parities), all 20 entries | Table 5 | `test_restrictions` |
+| G ↓ C5 contains no trivial character; every other channel does | Section 7 | `test_restrictions` |
+| 12/20/30/60-orbits under I and under I_h, all eight decompositions | Table 4 | `test_shells` |
+| SU(2) → 2I for j = 1/2 … 15/2; pair decompositions of 2, 2′, 4_s, 6 | Eqs. 12–13 | `test_double_group` |
+| Sym²: A+H, A+H, A+G+H, A+G+2H; counts 2,2,3,6 and 2,2,3,5 (characters and projector ranks) | Table 6 | `test_gl` |
+| sphere norms 1/3; 1/15; 4/7; 4/21, 4/21, 4/21, 1/105 | Section 6 | `test_gl` |
+| N_L relations of T1, T2, G, H and ∫\|Δ\|⁴ for all four channels | Eqs. 18–22 | `test_gl` |
+| \|Jh\|²/\|h\|² = (−7/20 + 47√5/30)² with the legacy seed; six forms independent; N4 = N4G + N4H | Section 6.2 | `test_gl` |
+| R: 6/5, 9/5 (T1); 3374/2145, 5061/2145 (T2); 10/7, 15/7 (H); G 1.52545, null cone 1.52721; κ = 1.752, φ₀ = 92.6°, I2/I1 ≈ 2·10⁻³ | Eqs. 22–23 | `test_gl` |
+| 18 point nodes of the G ground state, 12 on the five-fold axes | Section 6.3 | `test_gl` |
+| Table 7: all (K, χ) with one-dimensional fixed space per channel, their R (1.5273, 1.6056, 2.2028, 2.4378, 2.4476, 2.2909, …) and TR | Table 7 | `test_gl` |
+| Table 8: all seven rows to four decimals; Im C = ∓0.6186 for the two cyclic chiralities | Table 8 | `test_gl` |
+| D12: 24 elements, 9 irreps; m mod 12 assignment; enforced nodes; Sym² E_m; circle ratios 3/2 and 1 | Appendix B | `test_d12` |
+
+## 2. Comparison with the legacy scripts
+
+The legacy chain was run once in a scratch directory (unchanged scripts, only the hard-coded
+output path of `ih_basis.py` redirected) to obtain the baseline printed values.  Runtimes:
+
+| legacy script | time | package equivalent | time |
+|---|---|---|---|
+| `ih_basis.py 6` | 104 s | `groups` + `harmonics` (ℓ ≤ 6, incl. isotypic bases) | 12 s |
+| `ih_seeds.py` | 77 s | `harmonics.paper_basis_functions`, `invariant_P6`, `hexad_identity` | (included) |
+| `gl_inv.py` | 130 s | `gl.channel`, `gl.sym2_*` | 3 s |
+| `gl_inv2.py` | 123 s | `gl.quartic_invariants` | 2 s |
+| `gl_inv3.py` (optional, slow) | stopped after 34 min | `gl.relations` | < 1 s |
+| `gl_H.py` | 79 s | `gl.h_channel` | 5 s |
+| `gl_min.py` | 3 s | `gl.minimise_ratio` | 1 s |
+| `isotropy.py` | 6 s | `gl.isotropy_table` | 5 s |
+| `gl_final.py` | 35 s | `gl.g_stratum`, `gl.g_nodes`, `gl.h_candidates` | 2 s |
+| `shells.py` | 62 s | `shells` | 1 s |
+| `d12.py` | 1 s | `d12` | < 1 s |
+| `gl_states.py` | 11 s | `gl.g_ground_state`, `gl.h_candidates` | 2 s |
+
+`beyond32 all` (everything, ℓ ≤ 6): **24 s** on an Apple-silicon laptop (Python 3.12, sympy
+1.14); `pytest` (101 tests, including the slow cross-checks): about 1 minute.
+
+Baseline values printed by the legacy scripts and reproduced by the package (same digits):
+Table 1–3 and the bases (`ih_basis`, `ih_seeds`); the sphere norms and Sym² decompositions
+(`gl_inv`); the harmonic content ℓ ∈ {0,2}, {0,2,4,6}, {0,2,4,6}, {0,2,4} (`gl_inv2`);
+λ = (−7/20 + 47√5/30)² = 9.9425…, C_R 58 terms, C_I 46 terms, six invariants independent
+(`gl_H`); min R = 1.200000, 1.572960, 1.525451, 1.428571 with |η·η|² = 2.163·10⁻³ at the G
+minimum (`gl_min`); the complete isotropy table with R_wc, |η·η|², min|Δ| and moduli
+(`isotropy`); R(κ, φ), κ = 1.7523, phase 1.6158 rad, R(u) = 21(75u² + 170u + 687)/(715(u+3)²),
+u* = 108/35, R(u*) = 15505/10153, the 18 node centres (`gl_final`); the four I_h shell
+decompositions (`shells`); the D12 assignment and node conditions (`d12`); the G ground
+state, its stabiliser {E, 2 C3} and time-reversal × {3 C2} stabiliser, the null-cone
+minimum 1.527212900 and the H candidate rows (`gl_states`).
+
+## 3. Notes (no mathematical change)
+
+* **Speed.** The legacy code re-recognised every number with `nsimplify(…, [sqrt(5)])`.  The
+  package keeps the numbers in sympy's algebraic field QQ<√5> (`DomainMatrix`) and, for the
+  quartic invariants, works with the exact coefficient matrices of Δ² instead of expanding
+  symbolic products; the mathematics is the same, and a slow test (`-m slow`) checks the
+  form matrices against the direct symbolic expansion used by `gl_inv2.py`.
+* **Fields.** The orthonormal basis functions of T2 and G carry √7 and the fourth H function
+  √3; products of two basis functions are in Q(√5) except in the H channel, where √15 survives
+  in individual coefficients of the quartic forms (their linear relations are rational).  The
+  H-channel forms are therefore stored over Q(√3, √5) — still exact.
+* **Random seeds.** The intertwiner seed matrix uses `random.seed(3)` with the same draw order
+  as `gl_H.py`, so λ is reproduced digit by digit; the restarts use `numpy` seeds 0 and 1 as
+  in `gl_min.py` / `gl_states.py`.  The BFGS uses the analytic gradient of R, so the fraction
+  of restarts that land on the G minimum differs slightly (0.68 vs 0.72) while the minimum and
+  its state are identical.
+* **Not ported.** The older 5×5 construction of J in `gl_inv3.py` (`random.seed(1)`), which
+  `gl_H.py` superseded; it does not enter the paper.
+* **Table 7.** The legacy `isotropy.py` lists every (K, χ) with a one-dimensional fixed space,
+  including non-maximal K (e.g. the polar T1 state appears under C5 χ0, C3 χ0 and D5 A2, D3
+  A2).  `gl.isotropy_table()` reproduces that list; `gl.symmetry_fixed_states()` keeps the
+  entries whose stabiliser is K itself, which is exactly Table 7.  The legacy "TRS?" column
+  tests whether η* is a rotation image of η (true for the chiral axial states via the
+  perpendicular C2); the paper's TR column is I2 = I1.  Both flags are kept
+  (`time_reversal`, `tr_up_to_rotation`).
+* **Table 7, G channel.** The real G states have exactly rational weak-coupling ratios
+  (315/143, 1743/715, 350/143, 126/55; chiral 1148/715, 84/55), which the paper quotes as
+  decimals.  `tab_states.tex` prints decimals for G as the paper does; the fractions are in
+  `results.json` (`R_fraction`).
+* **Fractions** are printed reduced: the paper's 5061/2145 (real T2 states) is 1687/715.
+* **Table 8** is computed with the legacy quadrature for the coordinates of the candidate
+  functions (300 × 600 grid), so the digits agree with the paper.
+* **I_h class labels.** The improper classes −C5 and −C5² are the rotoreflections S10⁷ ~ S10³
+  and S10⁹ ~ S10; an early draft of `groups.py` had the two labels swapped, corrected before
+  release.  No number depends on the labels.
+* **Extras beyond the legacy scripts** (all checked): the Molien closed form derived from the
+  60 matrices (`molien.check_molien_closed_form`), Γ ↓ C_n multiplicities
+  (`restrictions.restrict_to_cyclic`), the I-decompositions and Frobenius cross-check of the
+  shells, the second cyclic chirality in Table 8, the D12 Sym² and circle ratios.
+
+## 4. Discrepancies
+
+None.  Every value listed in the task statement and every value printed by the legacy chain
+is reproduced.

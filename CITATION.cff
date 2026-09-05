@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite both the paper and the software."
+type: software
+title: "beyond32: superconducting pairing channels of the icosahedral group"
+version: 1.0.0
+date-released: 2026-09-05
+license: MIT
+repository-code: "https://github.com/psldm/beyond32"
+doi: "10.5281/zenodo.XXXXXXX"
+authors:
+  - family-names: Moss
+    given-names: Eva
+abstract: >-
+  Exact (sympy, Q(sqrt5)) group theory of the icosahedral group I, I_h and 2I for
+  superconducting pairing channels: character tables, branching of spherical harmonics,
+  basis functions, Molien series and the S^3/2I spectrum, restrictions to approximant
+  subgroups, permutation representations on cluster shells, double-group branching, and
+  the Ginzburg-Landau invariants, weak-coupling minima, symmetry-fixed states and
+  enforced nodes of the T1, T2, G and H channels; plus the dodecagonal group D12.
+keywords:
+  - icosahedral group
+  - quasicrystal
+  - superconductivity
+  - Ginzburg-Landau theory
+  - representation theory
+preferred-citation:
+  type: article
+  title: "Beyond the 32: Superconducting Pairing Channels of the Icosahedral Group -- Classification, Approximant Branching, and Ginzburg-Landau Theory for Quasicrystals"
+  authors:
+    - family-names: Moss
+      given-names: Eva
+  year: 2026
