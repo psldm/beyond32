@@ -25,4 +25,4 @@ Channels of the Icosahedral Group* (Eva Moss, 2026).
 
 The development scripts from which the package was refactored (twelve scripts and their
 README) are preserved unchanged in the git history: directory `legacy/` from the first commit
-(215886b) up to the commit preceding this release; see `REPORT.md` for the baseline comparison.
+up to the commit preceding this release; see `REPORT.md` for the baseline comparison.
