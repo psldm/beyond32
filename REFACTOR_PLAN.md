@@ -1,7 +1,8 @@
 # Refactoring plan: `legacy/` development chain -> `beyond32` package
 
 Companion code of *Beyond the 32: Superconducting Pairing Channels of the Icosahedral
-Group* (Eva Moss, 2026). The original scripts (now under `legacy/`, unchanged) were a
+Group* (Eva Moss, 2026). The original scripts (kept unchanged under `legacy/` in the git history,
+commit 215886b, and removed in the release commit) were a
 development chain: one script `exec`s the head of another, intermediate results travel
 through pickles, and every script recomputes the group from scratch. This document maps
 each old script to the new modules and lists the reference values that the test-suite pins

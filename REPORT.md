@@ -1,7 +1,8 @@
 # Refactoring report
 
 Companion code of *Beyond the 32: Superconducting Pairing Channels of the Icosahedral Group*
-(Eva Moss, 2026).  The development chain in `legacy/` (12 scripts plus a README, `exec` + pickles) was
+(Eva Moss, 2026).  The development chain (12 scripts plus a README, `exec` + pickles; kept
+unchanged as `legacy/` in the git history from commit 215886b until the release commit) was
 turned into the installable package `beyond32` (`pip install -e .`, `beyond32 all`).
 
 **Result: every reference value of the paper is reproduced; there is no discrepancy.**

@@ -23,5 +23,6 @@ Channels of the Icosahedral Group* (Eva Moss, 2026).
   numerical table, Tables 1-8 and Section 10, and every displayed result, Eqs. 4-24);
   `pytest` pins every number quoted in the paper.
 
-The development scripts from which the package was refactored are kept unchanged under
-`legacy/` (twelve scripts and their README; see `REPORT.md` for the baseline comparison).
+The development scripts from which the package was refactored (twelve scripts and their
+README) are preserved unchanged in the git history: directory `legacy/` from the first commit
+(215886b) up to the commit preceding this release; see `REPORT.md` for the baseline comparison.
