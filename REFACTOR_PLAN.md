@@ -37,6 +37,11 @@ literally.
 
 ## 3. Map from legacy scripts to package modules
 
+(Planning names; several were renamed during implementation, e.g. `rep_matrix` -> `rep_matrices`,
+`P6` -> `invariant_P6`, `restrict_to` -> `restrict`, `sym2_decomposition` -> `sym2_projector_ranks`,
+`irrep_matrices` -> `channel`, `gap_squared_components`/`invariants_NL` -> `quartic_invariants`,
+`g_ground_state_exact` -> `g_stratum`. README.md and REPORT.md describe the final code.)
+
 | legacy script | what it does | new home |
 |---|---|---|
 | `ih_basis.py` §"2I as quaternions", `rot`, classes by angle, `chi`, `inner`, five-fold axes | 120 quaternions, 60 rotations, class sizes [1,12,12,20,15], character table of I, orthonormality, axes | `groups.py` (`binary_icosahedral`, `icosahedral_rotations`, `IGroup`, `CHAR_I`, `fivefold_axes`, `threefold_axes`, `twofold_axes`) |

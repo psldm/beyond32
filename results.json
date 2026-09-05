@@ -2,20 +2,20 @@
  "package": {
   "name": "beyond32",
   "version": "1.0.0",
-  "generated": "2026-09-05T00:36:40",
+  "generated": "2026-09-05T01:10:54",
   "fast": false,
   "lmax": 6,
   "runtime_seconds": {
-   "groups": 17.2,
-   "harmonics": 28.42,
-   "molien": 2.13,
-   "restrictions": 0.83,
-   "shells": 1.8,
-   "double_group": 0.47,
-   "gl": 48.56,
-   "d12": 0.98
+   "groups": 2.42,
+   "harmonics": 8.35,
+   "molien": 0.65,
+   "restrictions": 0.22,
+   "shells": 0.57,
+   "double_group": 0.14,
+   "gl": 9.84,
+   "d12": 0.15
   },
-  "runtime_total_seconds": 100.39
+  "runtime_total_seconds": 22.34
  },
  "groups": {
   "I": {
@@ -2644,10 +2644,33 @@
     }
    }
   },
+  "N_terms": {
+   "T1": {
+    "N0": 9,
+    "N2": 12
+   },
+   "T2": {
+    "N0": 9,
+    "N2": 12,
+    "N4": 12,
+    "N6": 12
+   },
+   "G": {
+    "N0": 16,
+    "N2": 21,
+    "N4": 28,
+    "N6": 28
+   },
+   "H": {
+    "N0": 25,
+    "N2": 52,
+    "N4": 53
+   }
+  },
   "H": {
    "lam": "44621/3600 - 329*sqrt(5)/300",
    "lam_float": 9.942501006897453,
-   "lam_sqrt": "(-7/20 + 47 sqrt5/30)^2 (see tests)",
+   "lam_sqrt": "-7/20 + 47*sqrt(5)/30",
    "six_independent": true,
    "J_seed": "random.seed(3), Rational(randint(-4,4), randint(1,3)) 6x15 row-major",
    "J": [
@@ -2778,8 +2801,8 @@
       "im": 0.39280831086155
      }
     ],
-    "null_cone": "6/5",
     "real": "9/5",
+    "null_cone": "6/5",
     "real_R": 1.8,
     "null_cone_R": 1.2
    },
@@ -2803,8 +2826,8 @@
       "im": -0.4524615707104764
      }
     ],
+    "real": "1687/715",
     "null_cone": "3374/2145",
-    "real": "5061/2145",
     "real_R": 2.3594405594405594,
     "null_cone_R": 1.5729603729603732
    },
@@ -2861,8 +2884,8 @@
       "im": -0.11479707347667002
      }
     ],
-    "null_cone": "10/7",
     "real": "15/7",
+    "null_cone": "10/7",
     "real_R": 2.142857142857143,
     "null_cone_R": 1.4285714285714286
    }

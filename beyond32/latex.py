@@ -9,8 +9,10 @@ fragment is a ``tabular`` (or ``align*``) environment that can be ``\\input`` in
 """
 from __future__ import annotations
 
+import math
 import os
 import re
+from fractions import Fraction
 from typing import Any, Dict, List
 
 TABLE_FILES = ("tab_charI", "tab_char2I", "tab_branching", "tab_shells", "tab_restrict", "tab_GL",
@@ -78,9 +80,6 @@ def _phi_coeff_parts(p: str, q: str):
     """(negative, body, compound) for the coefficient p + q*varphi (rational strings), written
     with a common denominator and the positive term first, as in the paper:
     '3', '3\varphi', '3\varphi - 3', '3 - 21\varphi', '\tfrac{1 - 7\varphi}{15}'."""
-    import math
-    from fractions import Fraction
-
     P, Q = Fraction(p), Fraction(q)
     d = P.denominator * Q.denominator // math.gcd(P.denominator, Q.denominator)
     np_, nq = P.numerator * (d // P.denominator), Q.numerator * (d // Q.denominator)
@@ -144,6 +143,12 @@ def _frac_or_num(frac: str | None, x: float, nd: int = 4) -> str:
     return f"{x:.{nd}f}"
 
 
+def _tex_sci(x: float, nd: int = 1) -> str:
+    """2.2e-03 -> '2.2 \\times 10^{-3}'."""
+    mant, exp = f"{x:.{nd}e}".split("e")
+    return rf"{mant} \times 10^{{{int(exp)}}}"
+
+
 # --------------------------------------------------------------------------- tables
 def tab_charI(res) -> str:
     g = res["groups"]["I"]
@@ -202,7 +207,7 @@ def tab_shells(res) -> str:
              r"orbit & stabiliser & realised by & decomposition under $I_h$ & under $I$ \\", r"\hline"]
     order_ih = [n + p for p in "gu" for n in ["A", "T1", "T2", "G", "H"]]
     for r in rows:
-        stab = tex_irrep(r["stabiliser_Ih"].replace("v", "")) if False else _tex_point_group(r["stabiliser_Ih"])
+        stab = _tex_point_group(r["stabiliser_Ih"])
         lines.append(f"{r['size']} & ${stab}$ & {_SHELL_REALISED[r['orbit']]} & "
                      f"${tex_decomposition(r['decomposition_Ih'], order_ih)}$ & "
                      f"${tex_decomposition(r['decomposition_I'], ['A', 'T1', 'T2', 'G', 'H'])}$ \\\\")
@@ -253,8 +258,9 @@ def tab_states(res) -> str:
     rows = [r for r in res["gl"]["isotropy"] if r["table7"]]
     gs = res["gl"]["G_stratum"]
     lines = ["% Table 7: symmetry-fixed states per channel (from the exact representation matrices); R_wc = int|Delta|^4/(int|Delta|^2)^2; TR: I2 = I1",
+             "% last column: min|Delta|/max|Delta| on the 300 x 600 grid -- values of 0.001-0.002 are the grid residual of point nodes (the paper's 'points'), not small gaps",
              r"\begin{tabular}{llrlr}", r"\hline",
-             r"channel & isotropy $(K,\chi)$ & $R_{\rm wc}$ & TR & $\min|\Delta|/\max|\Delta|$ \\", r"\hline"]
+             r"channel & isotropy $(K,\chi)$ & $R_{\rm wc}$ & TR & $\min|\Delta|/\max|\Delta|$ (grid) \\", r"\hline"]
     for ch in ["T1", "T2", "G", "H"]:
         groups: Dict[tuple, list] = {}
         for r in rows:
@@ -292,18 +298,20 @@ def tab_Hcand(res) -> str:
     for k, r in rows.items():
         if abs(r["I2"]) > 1e-6:          # Table 8 lists the null-cone states only
             continue
-        lines.append(f"{names.get(k, k)} & {_num4(r['N2'])} & {_num4(r['N4G'])} & {_num4(r['N4H'])} & "
-                     f"{_num4(r['ReC'])} & {_num4(r['ImC'])} \\\\")
+        lines.append(f"{names.get(k, k)} & ${_num4(r['N2'])}$ & ${_num4(r['N4G'])}$ & ${_num4(r['N4H'])}$ & "
+                     f"${_num4(r['ReC'])}$ & ${_num4(r['ImC'])}$ \\\\")
     lines += [r"\hline", r"\end{tabular}"]
     return "\n".join(lines) + "\n"
 
 
 def tab_D12(res) -> str:
     d = res["d12"]
-    lines = ["% Appendix B: D12 -- assignment of the in-plane harmonics e^{+-i m phi} to irreps by m mod 12 (Eq. 24), enforced nodes, Sym^2 E_m",
+    lines = ["% Section 10 ('Appendix 10' in the paper's cross-references): D12 -- assignment of the in-plane harmonics e^{+-i m phi} to irreps by m mod 12 (Eq. 24), enforced nodes, Sym^2 E_m",
+             "% residue 0 stands for m = 12, 24, ...: the constant m = 0 alone is A_1, A_2 (sin m phi) first appears at m = 12",
              r"\begin{tabular}{ll}", r"\hline", r"$m \bmod 12$ & irreps \\", r"\hline"]
     for r in d["residues"]:
-        lines.append(f"{r['residue']} & ${_tex_d12_dec(r['irreps'])}$ \\\\")
+        note = r"\ (m \ge 12;\ m = 0:\ A_1)" if r["residue"] == 0 else ""
+        lines.append(f"{r['residue']} & ${_tex_d12_dec(r['irreps'])}{note}$ \\\\")
     lines += [r"\hline", r"\end{tabular}", "",
               r"\begin{tabular}{lccc}", r"\hline",
               r"irrep & node on $C_2'$ & node on $C_2''$ & node on the 12-fold axis \\", r"\hline"]
@@ -416,7 +424,7 @@ def eq_invariants(res) -> str:
     lines.append(rf"\eta_G &\propto (1,1,1,\kappa e^{{i\phi_0}}),\quad \kappa \simeq {gs['kappa']:.3f},\quad "
                  rf"\phi_0 \simeq {gs['phi0_deg']:.1f}^\circ,\quad R = {gs['R']:.5f}\ \text{{against}}\ "
                  rf"{res['gl']['G_ground_state']['null_cone_R']:.5f}\ \text{{(best null-cone state)}}, "
-                 rf"\ I_2/I_1 \simeq {gs['I2_over_I1']:.1e} \\")
+                 rf"\ I_2/I_1 \simeq {_tex_sci(gs['I2_over_I1'])} \\")
     lines.append(rf"R_{{\min}} &= {mins['T1']['R_min']:.4f}\ (T_1),\ {mins['T2']['R_min']:.4f}\ (T_2),\ "
                  rf"{mins['G']['R_min']:.5f}\ (G),\ {mins['H']['R_min']:.4f}\ (H)")
     lines.append(r"\end{align*}")
@@ -435,12 +443,15 @@ EMITTERS = {"tab_charI": tab_charI, "tab_char2I": tab_char2I, "tab_branching": t
 
 
 def write_tables(res: Dict[str, Any], outdir: str = "tables") -> List[str]:
-    """Write every fragment into ``outdir``; returns the list of paths."""
+    """Write every fragment into ``outdir``; returns the list of paths.  All fragments are
+    rendered before the first file is opened, so a results.json that lacks a key raises
+    ``KeyError`` without leaving partially written files behind."""
+    rendered = {name: fn(res) for name, fn in EMITTERS.items()}
     os.makedirs(outdir, exist_ok=True)
     paths = []
-    for name, fn in EMITTERS.items():
+    for name, text in rendered.items():
         path = os.path.join(outdir, name + ".tex")
         with open(path, "w") as f:
-            f.write(fn(res))
+            f.write(text)
         paths.append(path)
     return paths

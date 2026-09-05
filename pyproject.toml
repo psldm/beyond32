@@ -38,5 +38,5 @@ packages = ["beyond32"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [
-    "slow: takes more than about a minute; deselect with -m 'not slow'",
+    "slow: end-to-end cross-checks (up to about 20 s each, half of the suite's runtime); deselect with -m 'not slow'",
 ]

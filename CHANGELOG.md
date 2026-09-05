@@ -18,9 +18,10 @@ Channels of the Icosahedral Group* (Eva Moss, 2026).
   quartic invariants and their relations (Eqs. 18-22), the H-channel intertwiner and cross
   terms, weak-coupling minima, the G ground state (Eq. 23), symmetry-fixed states (Table 7)
   and the null-cone H candidates (Table 8).
-* The dodecagonal group D12 (Appendix B).
-* `beyond32 all` regenerates `results.json` and the LaTeX fragments in `tables/`;
+* The dodecagonal group D12 (Section 10 of the paper, its "Appendix 10").
+* `beyond32 all` regenerates `results.json` and the LaTeX fragments in `tables/` (every
+  numerical table, Tables 1-8 and Section 10, and every displayed result, Eqs. 4-24);
   `pytest` pins every number quoted in the paper.
 
-The development scripts from which the package was refactored are recorded in the git
-history (directory `legacy/`, removed before this release).
+The development scripts from which the package was refactored are kept unchanged under
+`legacy/` (twelve scripts and their README; see `REPORT.md` for the baseline comparison).

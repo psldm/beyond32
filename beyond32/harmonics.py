@@ -16,13 +16,13 @@ All arithmetic is exact over Q(sqrt5).
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Dict, List, Sequence, Tuple
+from typing import Dict, Tuple
 
 import sympy as sp
 from sympy import Matrix, Poly, Rational, S, factorial2
 
-from ._exact import (K, K_ONE, K_ZERO, PHI, VARPHI, ab, canon, dm, dm_col, from_ab, phi_form,
-                     rref_rows, solve, to_K, to_matrix, to_sympy)
+from ._exact import (K, K_ONE, K_ZERO, canon, dm, dm_col, from_ab, phi_form, rref_rows, to_K,
+                     to_matrix, to_sympy)
 from .groups import CHAR_I, CLASSES_I, IRREPS_I, icosahedral_group, so3_characters
 
 X, Y, Z = sp.symbols("x y z", real=True)
@@ -96,8 +96,7 @@ def is_harmonic(f) -> bool:
 
 def phi_form_poly(p) -> sp.Expr:
     """Rewrite the coefficients of p (in Q(sqrt5)) as p + q*varphi."""
-    return sum(phi_form(c) * X**a * Y**b * Z**c for (a, b, c), c_ in ()) if False else \
-        sp.Add(*[phi_form(c) * X**e[0] * Y**e[1] * Z**e[2] for e, c in coeff_dict(p).items()])
+    return sp.Add(*[phi_form(c) * X**e[0] * Y**e[1] * Z**e[2] for e, c in coeff_dict(p).items()])
 
 
 # --------------------------------------------------------------------------- representation
@@ -193,8 +192,6 @@ def laplacian_matrix(l: int):
 def harmonic_subspace(l: int):
     """Columns: coefficient vectors of a basis of the harmonic polynomials of degree l
     (DomainMatrix of shape n_l x (2l+1))."""
-    from sympy.polys.matrices import DomainMatrix
-
     N = laplacian_matrix(l).nullspace()      # rows are basis vectors
     H = N.transpose()
     assert H.shape[1] == 2 * l + 1, (l, H.shape)

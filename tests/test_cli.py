@@ -21,6 +21,42 @@ def test_rational_if_close():
     assert results.rational_if_close(1.5254512929) is None
 
 
+def test_cli_all_creates_the_output_directory(tmp_path, monkeypatch):
+    import beyond32.latex
+    import beyond32.results
+    from beyond32 import __version__
+    from beyond32.cli import main
+
+    stub = {"package": {"version": __version__, "runtime_seconds": {}}}
+    monkeypatch.setattr(beyond32.results, "collect", lambda fast=False: stub)
+    monkeypatch.setattr(beyond32.latex, "write_tables", lambda res, outdir: [])
+    out = tmp_path / "does" / "not" / "exist"
+    assert main(["all", "--fast", "--out", str(out)]) == 0
+    assert json.load(open(out / "results.json")) == stub
+
+
+def test_cli_tables_rejects_a_results_file_from_an_older_schema(tmp_path, capsys):
+    from beyond32.cli import main, schema_problem
+
+    stale = {"package": {"version": "0.9.0"}, "groups": {"I": {}, "2I": {}},
+             "harmonics": {"branching_by_characters": {}, "hexad": {}}}       # no basis_functions_terms
+    assert "harmonics/basis_functions_terms" in schema_problem(stale)
+    p = tmp_path / "old.json"
+    p.write_text(json.dumps(stale))
+    out = tmp_path / "tables"
+    assert main(["tables", "--results", str(p), "--out", str(out)]) == 1
+    assert "regenerate" in capsys.readouterr().out
+    assert not out.exists()                    # nothing half-written
+
+
+def test_write_tables_renders_everything_before_writing(tmp_path):
+    from beyond32 import latex
+
+    with pytest.raises(KeyError):
+        latex.write_tables({"groups": {"I": {"character_table": {}}}}, str(tmp_path / "t"))
+    assert not (tmp_path / "t").exists()
+
+
 @pytest.mark.slow
 def test_cli_check_reproduces_the_paper(capsys):
     from beyond32.cli import main

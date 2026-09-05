@@ -36,12 +36,10 @@ from sympy import Matrix, Poly, Rational, S, lambdify, sqrt
 from sympy.polys.domains import QQ
 from sympy.polys.matrices import DomainMatrix
 
-from ._exact import (K, PHI, SQRT5, ab, as_float, canon, dm, dm_col, solve as ksolve, to_K,
-                     to_matrix, to_sympy)
+from ._exact import K, PHI, ab, as_float, canon, solve as ksolve, to_K, to_matrix
 from .groups import (CHAR_I, CLASSES_I, IRREPS_I, generate_subgroup, icosahedral_group,
                      rotation_about)
-from .harmonics import (R2, X, Y, Z, act, coeff_dict, exponents, harmonic_components,
-                        is_harmonic, laplacian, mono_int, monomials, n_monomials,
+from .harmonics import (X, Y, Z, coeff_dict, exponents, laplacian_matrix, mono_int, monomials,
                         paper_basis_functions, projector, rep_matrices, sphere_gram, sphere_inner)
 
 CHANNELS = ("T1", "T2", "G", "H")
@@ -161,11 +159,6 @@ def hermitian_form_count(name: str) -> int:
 def tr_even_quartic_count(name: str) -> int:
     """Quartic terms allowed with F(eta*) = F(eta): sum_lambda m_lambda (m_lambda + 1)/2."""
     return sum(m * (m + 1) // 2 for m in sym2_by_characters(name).values())
-
-
-@lru_cache(maxsize=None)
-def _K2():
-    return QQ.algebraic_field(sqrt(3), sqrt(5))
 
 
 def _rank_exact(M: Matrix) -> int:
@@ -547,14 +540,16 @@ class HChannel:
 
 def _legacy_seed_matrix() -> Matrix:
     """The generic 6 x 15 seed of the intertwiner, exactly as legacy gl_H.py draws it:
-    random.seed(3); entries Rational(randint(-4,4), randint(1,3)) in row-major order."""
-    random.seed(3)
+    ``random.seed(3)``; entries Rational(randint(-4,4), randint(1,3)) in row-major order.
+    A private ``random.Random(3)`` yields the identical sequence without reseeding the
+    global generator."""
+    rng = random.Random(3)
     rows = []
     for i in range(6):
         row = []
         for j in range(15):
-            p = random.randint(-4, 4)
-            qd = random.randint(1, 3)
+            p = rng.randint(-4, 4)
+            qd = rng.randint(1, 3)
             row.append(Rational(p, qd))
         rows.append(row)
     return Matrix(rows)
@@ -595,7 +590,7 @@ def h_channel() -> HChannel:
     Jh4H = J2 * h4H
     assert any(e != _K2().zero for row in Jh4H.to_list() for e in row)
     # the image is harmonic (lands in the l = 2 harmonics): Laplacian of every coefficient vanishes
-    lap2 = _dm_K_to_K2(__import__("beyond32.harmonics", fromlist=["laplacian_matrix"]).laplacian_matrix(2))
+    lap2 = _dm_K_to_K2(laplacian_matrix(2))
     assert all(e == _K2().zero for row in (lap2 * Jh4H).to_list() for e in row)
     # isometry scale lambda: |J h|^2 = lambda |h|^2 identically on the H_4 subspace (Schur)
     JN = QuarticForm(d, _pairing_matrix(Jh4H, _gram_K2(2), Jh4H))
@@ -655,6 +650,22 @@ def weak_coupling_ratio(name: str, e: np.ndarray) -> float:
     return float(evaluate_form(Q, e).real / n**2)
 
 
+def weak_coupling_ratio_exact(name: str, e: Sequence) -> sp.Expr:
+    """R = int|Delta|^4 / (int|Delta|^2)^2 at an *exact* order parameter e (sympy numbers,
+    e.g. ``(1, 0, 0)`` or ``(1, I, 0)``; any normalisation), evaluated in exact arithmetic:
+    the quartic form at (e, conj e) divided by (e.conj e)^2.  The real state (1, 0, ...) and
+    the null-cone state (1, i, 0, ...) give the closed forms 9/5, 6/5 (T1); 5061/2145,
+    3374/2145 (T2); 15/7, 10/7 (H) of Eq. (22)."""
+    q = quartic_invariants(name)
+    vals = [sp.sympify(x) for x in e]
+    if len(vals) != q.dim:
+        raise ValueError(f"{name}: expected {q.dim} components, got {len(vals)}")
+    sub = {**dict(zip(q.eta, vals)), **{s: sp.conjugate(v) for s, v in zip(q.etab, vals)}}
+    num = sp.expand(q.expr("quartic").subs(sub, simultaneous=True))
+    norm2 = sp.expand(sum(v * sp.conjugate(v) for v in vals))
+    return _c2(num / norm2**2)
+
+
 @lru_cache(maxsize=None)
 def _tensor(name: str) -> np.ndarray:
     return quartic_invariants(name).quartic.tensor()
@@ -679,8 +690,6 @@ def minimise_ratio(name: str, restarts: int = 60, seed: int = 0, gtol: float = 1
             n = np.vdot(e, e).real
             s = np.dot(e, e)
             R = R + null_cone_penalty * abs(s) ** 2 / n**2
-            # gradient of |s|^2/n^2 : d|s|^2/d etab_k = 2 s conj(e_k) ... use numeric-safe form
-            g = 2 * s * np.conj(e)            # d(|s|^2)/d(etab_k)*? -> handled below
             # |s|^2 = s sbar ; d/d e_k = 2 e_k sbar ; d/d ebar_k = 2 ebar_k s
             dA = 2 * np.conj(e) * s           # d/d ebar_k
             ds = np.concatenate([2 * dA.real, 2 * dA.imag])
@@ -754,7 +763,6 @@ def g_ground_state(restarts: int = 80, seed: int = 1) -> Dict[str, object]:
     m = minimise_ratio("G", restarts=restarts, seed=seed, gtol=1e-12)
     st, tst = stabiliser("G", m.eta)
     mn, fr = node_fraction("G", m.eta)
-    rng_state_after = None
     # null-cone local minimum: continue the same random stream as the legacy script
     rng = np.random.RandomState(seed)
     for _ in range(restarts):
@@ -828,9 +836,13 @@ def g_stratum() -> Dict[str, object]:
 
 def g_nodes(kappa: Optional[float] = None, n_theta: int = 1200, thresh: float = 0.01,
             cluster_radius: float = 0.08) -> Dict[str, object]:
-    """Point nodes of the G ground state eta = (1, 1, 1, i kappa) found on a 1200 x 2400 grid
-    (|Delta| < 1% of max, clustered with radius 0.08), and how many lie on five-fold axes
-    (legacy gl_final.py)."""
+    """Point nodes of the C3-stratum state eta = (1, 1, 1, i kappa) found on a 1200 x 2400 grid
+    (|Delta| < 1% of max, clustered with radius 0.08), and how many lie on five-fold axes.
+    By default kappa = sqrt(108/35) = 1.7566, the exact stationary point of R on the
+    phi = pi/2 line (R = 15505/10153 = 1.52713), exactly as legacy gl_final.py -- not the
+    global minimum kappa = 1.752, phi0 = 92.6 deg of ``g_stratum`` (R = 1.52545); pass
+    ``kappa`` to use another point.  Both give the same 18 point nodes, 12 on five-fold
+    axes (Section 6.3 of the paper)."""
     from .groups import fivefold_axes
 
     if kappa is None:
@@ -915,7 +927,7 @@ def characters_1d(name: str) -> List[Tuple[str, Dict[int, complex]]]:
             chars.append((f"chi{m}", chi))
     elif name in ("D3", "D5"):
         n = len(elems) // 2
-        g = gen[name[1:] if False else "C" + name[1]]
+        g = gen["C" + name[1]]
         h = _perp2(g)
         for s in (1, -1):
             chi = {}

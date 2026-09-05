@@ -1,7 +1,7 @@
 # Refactoring report
 
 Companion code of *Beyond the 32: Superconducting Pairing Channels of the Icosahedral Group*
-(Eva Moss, 2026).  The development chain in `legacy/` (13 scripts, `exec` + pickles) was
+(Eva Moss, 2026).  The development chain in `legacy/` (12 scripts plus a README, `exec` + pickles) was
 turned into the installable package `beyond32` (`pip install -e .`, `beyond32 all`).
 
 **Result: every reference value of the paper is reproduced; there is no discrepancy.**
@@ -10,7 +10,8 @@ turned into the installable package `beyond32` (`pip install -e .`, `beyond32 al
 
 Exact values are compared exactly (sympy over Q(√5), or Q(√3, √5) where the normalised
 H basis brings in √3); numerical values to the precision quoted in the paper.  All of the
-following are pinned literally in `tests/` (101 tests) and checked by `beyond32 check`.
+following are pinned literally in `tests/` (107 tests); `beyond32 check` recomputes a
+selection of about 35 key items and compares them with the paper.
 
 | item | value | test |
 |---|---|---|
@@ -33,7 +34,7 @@ following are pinned literally in `tests/` (101 tests) and checked by `beyond32 
 | 18 point nodes of the G ground state, 12 on the five-fold axes | Section 6.3 | `test_gl` |
 | Table 7: all (K, χ) with one-dimensional fixed space per channel, their R (1.5273, 1.6056, 2.2028, 2.4378, 2.4476, 2.2909, …) and TR | Table 7 | `test_gl` |
 | Table 8: all seven rows to four decimals; Im C = ∓0.6186 for the two cyclic chiralities | Table 8 | `test_gl` |
-| D12: 24 elements, 9 irreps; m mod 12 assignment; enforced nodes; Sym² E_m; circle ratios 3/2 and 1 | Appendix B | `test_d12` |
+| D12: 24 elements, 9 irreps; m mod 12 assignment; enforced nodes; Sym² E_m; circle ratios 3/2 and 1 | Section 10 ("Appendix 10") | `test_d12` |
 
 ## 2. Comparison with the legacy scripts
 
@@ -55,8 +56,11 @@ output path of `ih_basis.py` redirected) to obtain the baseline printed values. 
 | `d12.py` | 1 s | `d12` | < 1 s |
 | `gl_states.py` | 11 s | `gl.g_ground_state`, `gl.h_candidates` | 2 s |
 
-`beyond32 all` (everything, ℓ ≤ 6): **24 s** on an Apple-silicon laptop (Python 3.12, sympy
-1.14); `pytest` (101 tests, including the slow cross-checks): about 1 minute.
+`beyond32 all` (everything, ℓ ≤ 6): **22–24 s** on an idle Apple-silicon laptop (Python 3.12,
+sympy 1.14); `pytest` (107 tests, including the six slow end-to-end cross-checks): 60 s, and
+`pytest -m "not slow"`: 31 s, on the same idle machine.  Under heavy load (several concurrent
+runs) these figures grow several-fold; the timings recorded in `results.json`
+(`package.runtime_*`) are those of the run that produced it.
 
 Baseline values printed by the legacy scripts and reproduced by the package (same digits):
 Table 1–3 and the bases (`ih_basis`, `ih_seeds`); the sphere norms and Sym² decompositions
@@ -81,11 +85,18 @@ minimum 1.527212900 and the H candidate rows (`gl_states`).
   √3; products of two basis functions are in Q(√5) except in the H channel, where √15 survives
   in individual coefficients of the quartic forms (their linear relations are rational).  The
   H-channel forms are therefore stored over Q(√3, √5) — still exact.
-* **Random seeds.** The intertwiner seed matrix uses `random.seed(3)` with the same draw order
-  as `gl_H.py`, so λ is reproduced digit by digit; the restarts use `numpy` seeds 0 and 1 as
-  in `gl_min.py` / `gl_states.py`.  The BFGS uses the analytic gradient of R, so the fraction
-  of restarts that land on the G minimum differs slightly (0.68 vs 0.72) while the minimum and
-  its state are identical.
+* **Random seeds.** The intertwiner seed matrix uses the `random.seed(3)` draw sequence of
+  `gl_H.py` (from a private `random.Random(3)`, so the global generator is not reseeded), so λ
+  is reproduced digit by digit; the restarts use `numpy` seeds 0 and 1 as in `gl_min.py` /
+  `gl_states.py`, with one `RandomState(0)` per channel (`gl_min.py` drew the four channels
+  from a single continuing stream) and the analytic gradient of R (`gl_min.py`: finite
+  differences).  The individual starting points therefore differ from the baseline; the four
+  minima agree with it to 10⁻⁶ (|η·η|² = 2.163·10⁻³ identically), while the fraction of
+  restarts that land on the G minimum differs slightly (0.68 vs 0.72).
+* **G nodes.** `gl.g_nodes()` searches the nodes at η = (1, 1, 1, iκ) with κ = √(108/35) =
+  1.7566, the exact stationary point of the φ = π/2 line (R = 15505/10153), exactly as
+  `gl_final.py` did, not at the global minimum κ = 1.7523, φ₀ = 92.6°; both states have the
+  same 18 point nodes with 12 on five-fold axes.
 * **Not ported.** The older 5×5 construction of J in `gl_inv3.py` (`random.seed(1)`), which
   `gl_H.py` superseded; it does not enter the paper.
 * **Table 7.** The legacy `isotropy.py` lists every (K, χ) with a one-dimensional fixed space,
@@ -95,10 +106,15 @@ minimum 1.527212900 and the H candidate rows (`gl_states`).
   tests whether η* is a rotation image of η (true for the chiral axial states via the
   perpendicular C2); the paper's TR column is I2 = I1.  Both flags are kept
   (`time_reversal`, `tr_up_to_rotation`).
-* **Table 7, G channel.** The real G states have exactly rational weak-coupling ratios
+* **Table 7, G channel.** The symmetry-fixed G states have rational weak-coupling ratios
   (315/143, 1743/715, 350/143, 126/55; chiral 1148/715, 84/55), which the paper quotes as
-  decimals.  `tab_states.tex` prints decimals for G as the paper does; the fractions are in
-  `results.json` (`R_fraction`).
+  decimals.  `gl.weak_coupling_ratio_exact` evaluates the quartic form in exact arithmetic at
+  an exact order parameter (`test_gl` pins 315/143 for xyz, 1743/715 for g_x and 84/55 for
+  (1, ω, ω², 0), as well as the Eq. 22 closed forms 9/5, 6/5, 5061/2145, 3374/2145, 15/7,
+  10/7 that `results.json` records under `weak_coupling_minima.*.real` / `.null_cone`); the
+  `R_fraction` entries of the numerically found fixed states in `results.json` are recognised
+  from the float with `Fraction.limit_denominator(5000)` at tolerance 10⁻⁹.  `tab_states.tex`
+  prints decimals for G as the paper does.
 * **Fractions** are printed reduced: the paper's 5061/2145 (real T2 states) is 1687/715.
 * **Table 8** is computed with the legacy quadrature for the coordinates of the candidate
   functions (300 × 600 grid), so the digits agree with the paper.
@@ -108,7 +124,19 @@ minimum 1.527212900 and the H candidate rows (`gl_states`).
 * **Extras beyond the legacy scripts** (all checked): the Molien closed form derived from the
   60 matrices (`molien.check_molien_closed_form`), Γ ↓ C_n multiplicities
   (`restrictions.restrict_to_cyclic`), the I-decompositions and Frobenius cross-check of the
-  shells, the second cyclic chirality in Table 8, the D12 Sym² and circle ratios.
+  shells, the second cyclic chirality in Table 8, the D12 Sym² and circle ratios, and the
+  closed form √λ = −7/20 + 47√5/30 obtained by denesting (`sqrtdenest`) and verified exactly.
+  The numbers of terms of the invariants N_L printed by `gl_inv2.py` (T1 9/12; T2 9/12/12/12;
+  G 16/21/28/28; H 25/52/53 for N0/N2/…) are reproduced (`results.json` `gl.N_terms`).
+* **Naming.** The D12 material is Section 10 of the paper, cross-referenced there as
+  "Appendix 10"; the legacy README calls it "Appendix B".  `REFACTOR_PLAN.md` is the planning
+  document written before the port; several function names it proposes were changed during
+  implementation (e.g. `harmonics.rep_matrix` → `rep_matrices`, `gl.invariants_NL` →
+  `quartic_invariants`, `gl.g_ground_state_exact` → `g_stratum`), and the D12 character
+  extraction ended up exact rather than a least-squares fit; README.md and this report describe
+  the final code.
+* **results.json** is reproducible except for `package.generated` and the `package.runtime_*`
+  timings.
 
 ## 4. Discrepancies
 

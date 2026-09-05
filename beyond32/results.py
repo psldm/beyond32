@@ -18,7 +18,7 @@ import numpy as np
 import sympy as sp
 
 from . import __version__
-from ._exact import PHI, as_float, canon, phi_form, to_sympy
+from ._exact import phi_form
 
 
 # --------------------------------------------------------------------------- JSON helpers
@@ -95,7 +95,7 @@ def groups_section() -> Dict[str, Any]:
               "dims": {n: T1.dim(n) for n in T1.irreps}, "orthonormal": T1.is_orthonormal(),
               "sum_of_squared_dims": sum(T1.dim(n) ** 2 for n in T1.irreps)},
         "2I": {"order": 120, "angles_deg": list(g.ANGLES_2I), "class_sizes": list(T2.sizes),
-               "cos_half_angle": [str(c) for c in g._COS_HALF_2I],
+               "cos_half_angle": [str(c) for c in g.COS_HALF_2I],
                "character_table": {n: [phi_str(c) for c in row] for n, row in T2.chars.items()},
                "dims": {n: T2.dim(n) for n in T2.irreps}, "orthonormal": T2.is_orthonormal(),
                "sum_of_squared_dims": sum(T2.dim(n) ** 2 for n in T2.irreps),
@@ -145,9 +145,16 @@ def gl_section(fast: bool = False) -> Dict[str, Any]:
     out["harmonic_content"] = {n: sorted(gl.quartic_invariants(n).components) for n in gl.CHANNELS}
     out["relations"] = {n: {k: {kk: str(vv) for kk, vv in v.items()} for k, v in gl.relations(n).items()}
                         for n in gl.CHANNELS}
+    out["N_terms"] = {n: {f"N{L}": len(sp.Poly(gl.quartic_invariants(n).expr(f"N{L}"),
+                                                *gl.quartic_invariants(n).gens).terms())
+                          for L in sorted(gl.quartic_invariants(n).N)} for n in gl.CHANNELS}
     H = gl.h_channel()
+    # lam is a perfect square in Q(sqrt5): denest sqrt(lam) and verify it exactly
+    lam_sqrt = sp.sqrtdenest(sp.sqrt(H.lam))
+    if sp.expand(lam_sqrt**2 - H.lam) != 0:
+        lam_sqrt = None
     out["H"] = {"lam": str(H.lam), "lam_float": float(sp.N(H.lam)),
-                "lam_sqrt": str(sp.sqrt(H.lam).simplify()) if False else "(-7/20 + 47 sqrt5/30)^2 (see tests)",
+                "lam_sqrt": None if lam_sqrt is None else str(lam_sqrt),
                 "six_independent": H.six_independent,
                 "J_seed": "random.seed(3), Rational(randint(-4,4), randint(1,3)) 6x15 row-major",
                 "J": [[str(x) for x in row] for row in H.J.tolist()],
@@ -159,11 +166,12 @@ def gl_section(fast: bool = False) -> Dict[str, Any]:
         minima[n] = {"R_min": m.value, "R_min_fraction": rational_if_close(m.value), "I2": m.I2,
                      "fraction_of_restarts_at_min": m.fraction_at_min,
                      "R_max_over_restarts": float(m.all_values[-1]), "eta": m.eta}
-    # the closed forms of the extremal values for the three SO(3)-like channels
-    minima["T1"]["null_cone"], minima["T1"]["real"] = "6/5", "9/5"
-    minima["T2"]["null_cone"], minima["T2"]["real"] = "3374/2145", "5061/2145"
-    minima["H"]["null_cone"], minima["H"]["real"] = "10/7", "15/7"
+    # the extremal values of the three SO(3)-like channels (Eq. 22): R at the real state
+    # (1, 0, ...) and at the null-cone state (1, i, 0, ...), exactly (closed forms, reduced
+    # fractions: the paper's 5061/2145 is 1687/715) and numerically
     for n, d in ((3, "T1"), (3, "T2"), (5, "H")):
+        minima[d]["real"] = str(gl.weak_coupling_ratio_exact(d, [1] + [0] * (n - 1)))
+        minima[d]["null_cone"] = str(gl.weak_coupling_ratio_exact(d, [1, sp.I] + [0] * (n - 2)))
         e0 = np.zeros(n, dtype=complex)
         e0[0] = 1
         en = np.zeros(n, dtype=complex)

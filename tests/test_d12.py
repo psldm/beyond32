@@ -1,4 +1,4 @@
-"""Tests for beyond32.d12: the dodecagonal group D12 of Appendix B.
+"""Tests for beyond32.d12: the dodecagonal group D12 of Section 10 of the paper.
 
 The reference values are pinned literally; the module must compute them from the group.
 """

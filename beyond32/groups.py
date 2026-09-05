@@ -26,8 +26,7 @@ from typing import Dict, Optional, Sequence, Tuple
 import sympy as sp
 from sympy import Matrix, Rational, S
 
-from ._exact import (K, K_ONE, K_ZERO, PHI, SQRT5, ab, as_float, canon, from_ab, galois,
-                     to_K, to_sympy)
+from ._exact import (K_ONE, K_ZERO, PHI, ab, as_float, canon, from_ab, galois, to_K, to_sympy)
 
 IRREPS_I = ("A", "T1", "T2", "G", "H")
 CLASSES_I = ("E", "C5", "C5^2", "C3", "C2")
@@ -40,7 +39,7 @@ CLASS_SIZES_2I = (1, 12, 20, 12, 30, 12, 20, 12, 1)
 # cos(theta/2) of the rotation classes of I (theta = rotation angle)
 _COS_HALF_I = {"E": S(1), "C5": PHI / 2, "C5^2": (PHI - 1) / 2, "C3": Rational(1, 2), "C2": S(0)}
 # cos(alpha/2) for the SU(2) classes of 2I in the order of ANGLES_2I
-_COS_HALF_2I = (S(1), PHI / 2, Rational(1, 2), (PHI - 1) / 2, S(0),
+COS_HALF_2I = (S(1), PHI / 2, Rational(1, 2), (PHI - 1) / 2, S(0),
                 -(PHI - 1) / 2, Rational(-1, 2), -PHI / 2, S(-1))
 
 
@@ -223,7 +222,6 @@ def _positive_lift(q):
 def _class_of_w(w) -> str:
     """Class of I of a rotation whose lift has real part w = cos(alpha/2)."""
     a, b = ab(w)
-    val = (abs(Fraction(int(a.p), int(a.q))), Fraction(int(b.p), int(b.q)) * (1 if a >= 0 else -1))
     table = {(Fraction(1), Fraction(0)): "E",
              (Fraction(1, 4), Fraction(1, 4)): "C5",       # phi/2 = 1/4 + sqrt5/4
              (Fraction(1, 4), Fraction(-1, 4)): "C5^2",    # (phi-1)/2 = -1/4 + sqrt5/4
@@ -347,7 +345,7 @@ def two_i_classes() -> Tuple[Tuple[int, sp.Expr, Tuple[int, ...]], ...]:
     """Classes of 2I: (angle in degrees, w = cos(alpha/2), indices into binary_icosahedral())."""
     qs = _kquats()
     out = []
-    for angle, w in zip(ANGLES_2I, _COS_HALF_2I):
+    for angle, w in zip(ANGLES_2I, COS_HALF_2I):
         wk = to_K(w)
         idx = tuple(i for i, q in enumerate(qs) if q[0] == wk)
         out.append((angle, canon(w), idx))
@@ -362,7 +360,7 @@ def character_table_2I() -> CharacterTable:
     Built as in the legacy code: the SU(2) characters U_{2j}(w) for 2j = 0..5 give the
     irreps 1 (=A), 2, T1, 4s, H, 6; the Galois conjugates of 2 and T1 give 2' and T2; and
     G = 2 x 2'."""
-    ws = _COS_HALF_2I
+    ws = COS_HALF_2I
     rows = {}
     rows["A"] = tuple(su2_character(0, w) for w in ws)
     rows["2"] = tuple(su2_character(1, w) for w in ws)

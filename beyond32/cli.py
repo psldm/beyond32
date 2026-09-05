@@ -15,7 +15,19 @@ import sys
 import time
 from fractions import Fraction
 
+from . import __version__
+
 CACHE_DIR = ".cache"
+
+# keys every LaTeX emitter needs; a results.json from an older schema fails here with a
+# clear message instead of a KeyError half-way through writing tables/
+_REQUIRED_KEYS = {"package": ("version",), "groups": ("I", "2I"),
+                  "harmonics": ("branching_by_characters", "basis_functions_terms", "P6_terms", "hexad"),
+                  "molien": ("m_A", "spectrum"), "restrictions": ("table",), "shells": ("table",),
+                  "double_group": ("eq12", "eq13"),
+                  "gl": ("sym2", "relations", "weak_coupling_minima", "G_ground_state", "G_stratum",
+                         "isotropy", "H_candidates"),
+                  "d12": ("residues", "nodes", "sym2", "weak_coupling")}
 
 
 def _load_results(path: str | None):
@@ -26,12 +38,28 @@ def _load_results(path: str | None):
     return None, None
 
 
+def schema_problem(res) -> str | None:
+    """None if ``res`` has every key the LaTeX emitters read, else a message naming the
+    first missing key (and the version the file was written by)."""
+    for section, keys in _REQUIRED_KEYS.items():
+        if section not in res or not isinstance(res[section], dict):
+            missing = section
+        else:
+            missing = next((f"{section}/{k}" for k in keys if k not in res[section]), None)
+        if missing:
+            ver = (res.get("package") or {}).get("version", "unknown")
+            return (f"results.json lacks '{missing}' (written by beyond32 {ver}, this is {__version__}); "
+                    f"regenerate it with 'beyond32 all'")
+    return None
+
+
 def cmd_all(args) -> int:
     from .results import collect
     from .latex import write_tables
 
     t0 = time.time()
     res = collect(fast=args.fast)
+    os.makedirs(args.out, exist_ok=True)
     with open(os.path.join(args.out, "results.json"), "w") as f:
         json.dump(res, f, indent=1)
     if args.cache:
@@ -54,6 +82,12 @@ def cmd_tables(args) -> int:
         res = collect(fast=args.fast)
     else:
         print(f"[beyond32] using {src}")
+        problem = schema_problem(res)
+        if problem:
+            print(f"[beyond32] {problem}")
+            return 1
+        if res["package"]["version"] != __version__:
+            print(f"[beyond32] note: {src} was written by beyond32 {res['package']['version']}")
     paths = write_tables(res, args.out)
     print("\n".join(paths))
     return 0
@@ -124,7 +158,15 @@ def _reference_checks(res):
     R.append(("H: quartic", gl["relations"]["H"]["quartic"], {"I1": "10/7", "I2": "5/7"}))
     R.append(("H: six forms independent", gl["H"]["six_independent"], True))
     R.append(("H: lambda", abs(gl["H"]["lam_float"] - (-7 / 20 + 47 * 5 ** 0.5 / 30) ** 2) < 1e-9, True))
+    R.append(("H: sqrt(lambda)", gl["H"]["lam_sqrt"], "-7/20 + 47*sqrt(5)/30"))
+    R.append(("N_L terms (legacy gl_inv2)", gl["N_terms"],
+              {"T1": {"N0": 9, "N2": 12}, "T2": {"N0": 9, "N2": 12, "N4": 12, "N6": 12},
+               "G": {"N0": 16, "N2": 21, "N4": 28, "N6": 28}, "H": {"N0": 25, "N2": 52, "N4": 53}}))
     m = gl["weak_coupling_minima"]
+    R.append(("R of real / null-cone states (exact)",
+              [[str(Fraction(m[ch][k])) for k in ("real", "null_cone")] for ch in ("T1", "T2", "H")],
+              [[str(Fraction(9, 5)), str(Fraction(6, 5))], [str(Fraction(5061, 2145)), str(Fraction(3374, 2145))],
+               [str(Fraction(15, 7)), str(Fraction(10, 7))]]))
     R.append(("min R (T1)", round(m["T1"]["R_min"], 5), round(6 / 5, 5)))
     R.append(("min R (T2)", round(m["T2"]["R_min"], 5), round(3374 / 2145, 5)))
     R.append(("min R (H)", round(m["H"]["R_min"], 5), round(10 / 7, 5)))
@@ -166,15 +208,17 @@ def main(argv=None) -> int:
     a.add_argument("--cache", action="store_true", help="also keep a copy under .cache/")
     a.set_defaults(func=cmd_all)
     t = sub.add_parser("tables", help="write the LaTeX fragments from results.json")
-    t.add_argument("--results", default=None, help="path to results.json")
-    t.add_argument("--out", default="tables")
-    t.add_argument("--fast", action="store_true")
+    t.add_argument("--results", default=None,
+                   help="path to results.json (default: ./results.json, then ./.cache/results.json)")
+    t.add_argument("--out", default="tables", help="output directory for the .tex fragments (default: tables)")
+    t.add_argument("--fast", action="store_true",
+                   help="if no results.json is found, compute it without the slow cross-checks")
     t.set_defaults(func=cmd_tables)
     gcmd = sub.add_parser("gl", help="print the Ginzburg-Landau summary")
-    gcmd.add_argument("--fast", action="store_true")
+    gcmd.add_argument("--fast", action="store_true", help="skip the Sym^2 projector-rank cross-check")
     gcmd.set_defaults(func=cmd_gl)
     c = sub.add_parser("check", help="recompute and compare with the values quoted in the paper")
-    c.add_argument("--fast", action="store_true")
+    c.add_argument("--fast", action="store_true", help="skip the optional slow cross-checks")
     c.set_defaults(func=cmd_check)
     args = p.parse_args(argv)
     return args.func(args)

@@ -123,6 +123,43 @@ def test_weak_coupling_ratios_of_real_and_null_cone_states():
     assert abs(gl.weak_coupling_ratio("H", real(5)) - 15 / 7) < 1e-12
 
 
+def test_exact_weak_coupling_ratios_closed_forms():
+    """Eq. (22) at the real state (1, 0, ...) and the null-cone state (1, i, 0, ...), in exact
+    arithmetic (these are the 'real' / 'null_cone' entries of results.json)."""
+    I = sp.I
+    assert gl.weak_coupling_ratio_exact("T1", (1, 0, 0)) == Rational(9, 5)
+    assert gl.weak_coupling_ratio_exact("T1", (1, I, 0)) == Rational(6, 5)
+    assert gl.weak_coupling_ratio_exact("T2", (1, 0, 0)) == Rational(5061, 2145)
+    assert gl.weak_coupling_ratio_exact("T2", (1, I, 0)) == Rational(3374, 2145)
+    assert gl.weak_coupling_ratio_exact("H", (1, 0, 0, 0, 0)) == Rational(15, 7)
+    assert gl.weak_coupling_ratio_exact("H", (1, I, 0, 0, 0)) == Rational(10, 7)
+    # normalisation-independent, and the closed forms are c (2 I1 + I2) with c the I2 coefficient
+    assert gl.weak_coupling_ratio_exact("T2", (Rational(1, 2), I / 2, 0)) == Rational(3374, 2145)
+    for ch in ("T1", "T2", "H"):
+        c = gl.relations(ch)["quartic"]
+        assert c["I1"] == 2 * c["I2"]
+    # the exact G states of Table 7: xyz (T A), g_x (D2), and the chiral (1, w, w^2, 0) (C3)
+    assert gl.weak_coupling_ratio_exact("G", (0, 0, 0, 1)) == Rational(315, 143)      # 2.2028
+    assert gl.weak_coupling_ratio_exact("G", (1, 0, 0, 0)) == Rational(1743, 715)     # 2.4378
+    w = Rational(-1, 2) + sqrt(3) * I / 2
+    assert gl.weak_coupling_ratio_exact("G", (1, w, sp.expand(w**2), 0)) == Rational(84, 55)   # 1.5273
+
+
+def test_h_isometry_scale_is_a_perfect_square():
+    H = gl.h_channel()
+    root = sp.sqrtdenest(sp.sqrt(H.lam))
+    assert sp.expand(root - (Rational(-7, 20) + 47 * SQRT5 / 30)) == 0
+    assert sp.expand(root**2 - H.lam) == 0
+
+
+def test_number_of_terms_of_the_invariants_matches_legacy_gl_inv2():
+    expected = {"T1": {0: 9, 2: 12}, "T2": {0: 9, 2: 12, 4: 12, 6: 12},
+                "G": {0: 16, 2: 21, 4: 28, 6: 28}, "H": {0: 25, 2: 52, 4: 53}}
+    for name, exp in expected.items():
+        q = gl.quartic_invariants(name)
+        assert {L: len(sp.Poly(q.expr(f"N{L}"), *q.gens).terms()) for L in q.N} == exp, name
+
+
 def test_weak_coupling_minima():
     assert abs(gl.minimise_ratio("T1").value - 6 / 5) < 1e-6
     assert abs(gl.minimise_ratio("T2").value - 3374 / 2145) < 1e-6
