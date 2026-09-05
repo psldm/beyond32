@@ -149,14 +149,15 @@ def rank(D: DomainMatrix) -> int:
 def solve(A: DomainMatrix, b: DomainMatrix) -> DomainMatrix:
     """Solve A x = b exactly (A need not be square; the system must be consistent)."""
     n = A.shape[1]
+    dom = A.domain
     aug = DomainMatrix.hstack(A, b)
     R, pivots = aug.rref()
     if n in pivots:
         raise ValueError("inconsistent linear system")
-    rows = [[K_ZERO] * b.shape[1] for _ in range(n)]
+    rows = [[dom.zero] * b.shape[1] for _ in range(n)]
     for r, p in enumerate(pivots):
         rows[p] = [R[r, n + j].element for j in range(b.shape[1])]
-    return DomainMatrix(rows, (n, b.shape[1]), K)
+    return DomainMatrix(rows, (n, b.shape[1]), dom)
 
 
 def entries(D: DomainMatrix) -> list[list[ANP]]:

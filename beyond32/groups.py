@@ -377,12 +377,16 @@ def character_table_2I() -> CharacterTable:
     return CharacterTable("2I", tuple(f"{a}" for a in ANGLES_2I), CLASS_SIZES_2I, chars)
 
 
-CLASSES_IH = CLASSES_I + ("i", "S10", "S10^3", "S6", "sigma")
+# improper classes of I_h in the order (-E, -C5, -C5^2, -C3, -C2): the inversion i, then
+# i C5 = S10^7 (class S10^3), i C5^2 = S10^9 (class S10), i C3 = S6^5 (class S6), i C2 = sigma
+CLASSES_IH = CLASSES_I + ("i", "S10^3", "S10", "S6", "sigma")
 
 
 @lru_cache(maxsize=None)
 def character_table_Ih() -> CharacterTable:
-    """Character table of I_h = I x {E, i}: Gamma_g(iR) = chi(R), Gamma_u(iR) = -chi(R)."""
+    """Character table of I_h = I x {E, i}: Gamma_g(iR) = chi(R), Gamma_u(iR) = -chi(R).
+    The improper classes are listed as -R for R in E, C5, C5^2, C3, C2 (labels i, S10^3,
+    S10, S6, sigma in Schoenflies notation)."""
     chars = {}
     for name, row in CHAR_I.chars.items():
         chars[name + "g"] = row + row
