@@ -145,6 +145,36 @@ def test_exact_weak_coupling_ratios_closed_forms():
     assert gl.weak_coupling_ratio_exact("G", (1, w, sp.expand(w**2), 0)) == Rational(84, 55)   # 1.5273
 
 
+def test_table7_ratios_from_exact_fixed_spaces():
+    """The R_wc of the real-character states of Table 7, computed from the EXACT fixed spaces
+    (null spaces over Q(sqrt3, sqrt5)) and the exact quartic forms; the chiral C5 state of G
+    (complex character) is compared numerically with the recognised fraction 1148/715."""
+    R = gl.exact_ratio_of_fixed_state
+    assert R("T1", "D5", "A2") == Rational(9, 5)
+    assert R("T1", "D3", "A2") == Rational(9, 5)
+    assert R("T1", "D2", "B1") == Rational(9, 5)
+    assert R("T2", "D5", "A2") == Rational(1687, 715)        # = 5061/2145
+    assert R("T2", "D2", "B1") == Rational(1687, 715)
+    assert R("G", "T", "A") == Rational(315, 143)            # xyz, 2.2028
+    assert R("G", "D2", "B1") == Rational(1743, 715)         # g_z, 2.4378
+    assert R("G", "D2", "B3") == Rational(1743, 715)         # g_x
+    assert R("G", "D3", "A1") == Rational(350, 143)          # 2.4476
+    assert R("G", "D3", "A2") == Rational(126, 55)           # 2.2909
+    assert R("H", "D5", "A1") == Rational(15, 7)
+    assert R("H", "D3", "A1") == Rational(15, 7)
+    assert R("H", "D2", "B1") == Rational(15, 7)
+    # complex characters are not handled exactly
+    assert R("G", "C5", "chi1") is None and R("H", "T", "1E") is None
+    # the fixed space of D3 A1 in G is one-dimensional and the exact vector is real
+    (v,) = gl.fixed_space_exact("G", "D3", "A1")
+    assert all(sp.im(c) == 0 for c in v) and len(v) == 4
+    # chiral C5 states of G: recognised fraction 1148/715, agreeing to double precision
+    rows = {(r.subgroup, r.character): r for r in gl.symmetry_fixed_states(["G"])}
+    for m in ("chi1", "chi2", "chi3", "chi4"):
+        assert abs(rows[("C5", m)].R - 1148 / 715) < 1e-12
+    assert abs(rows[("C3", "chi1")].R - 84 / 55) < 1e-12
+
+
 def test_h_isometry_scale_is_a_perfect_square():
     H = gl.h_channel()
     root = sp.sqrtdenest(sp.sqrt(H.lam))

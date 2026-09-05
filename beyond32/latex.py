@@ -258,6 +258,8 @@ def tab_states(res) -> str:
     rows = [r for r in res["gl"]["isotropy"] if r["table7"]]
     gs = res["gl"]["G_stratum"]
     lines = ["% Table 7: symmetry-fixed states per channel (from the exact representation matrices); R_wc = int|Delta|^4/(int|Delta|^2)^2; TR: I2 = I1",
+             "% R_wc: exact fractions computed from the exact fixed spaces for the real (+-1) characters; for the chiral C_n states the",
+             "% fraction is recognised from the numerical value (denominator <= 5000, tolerance 1e-9; 84/55 for the C3 state also verified exactly)",
              "% last column: min|Delta|/max|Delta| on the 300 x 600 grid -- values of 0.001-0.002 are the grid residual of point nodes (the paper's 'points'), not small gaps",
              r"\begin{tabular}{llrlr}", r"\hline",
              r"channel & isotropy $(K,\chi)$ & $R_{\rm wc}$ & TR & $\min|\Delta|/\max|\Delta|$ (grid) \\", r"\hline"]
@@ -274,8 +276,8 @@ def tab_states(res) -> str:
                 lab = _tex_isotropy(r["subgroup"], r["character"])
                 if lab not in labels:
                     labels.append(lab)
-            # the paper quotes exact fractions for T1, T2, H and four decimals for G
-            frac = rs[0]["R_fraction"] if ch != "G" else None
+            # exact fraction where the fixed space was computed exactly, else the recognised one
+            frac = rs[0].get("R_exact") or rs[0]["R_fraction"]
             lines.append(f"${tex_irrep(ch)}$ & ${';\\ '.join(labels)}$ & ${_frac_or_num(frac, R)}$ & "
                          f"{'yes' if tr else 'no'} & {min(r['min_gap'] for r in rs):.3f} \\\\")
         if ch == "G":

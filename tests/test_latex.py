@@ -44,6 +44,9 @@ def test_write_all_fragments(tmp_path):
         assert r"\begin{tabular}" in txt or r"\begin{align*}" in txt
     states = open(tmp_path / "tab_states.tex").read()
     assert r"\tfrac{9}{5}" in states and r"\tfrac{6}{5}" in states and "1.5255" in states
+    for frac in (r"\tfrac{1687}{715}", r"\tfrac{315}{143}", r"\tfrac{1743}{715}", r"\tfrac{350}{143}",
+                 r"\tfrac{126}{55}", r"\tfrac{1148}{715}", r"\tfrac{84}{55}", r"\tfrac{15}{7}", r"\tfrac{10}{7}"):
+        assert frac in states, frac
     hc = open(tmp_path / "tab_Hcand.tex").read()
     assert "0.7619" in hc and "-0.1825" in hc and "-0.6186" in hc
     ch = open(tmp_path / "tab_charI.tex").read()

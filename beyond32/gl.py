@@ -247,6 +247,28 @@ def _c2(e) -> sp.Expr:
     return sp.expand(sp.radsimp(sp.expand(e)))
 
 
+@lru_cache(maxsize=None)
+def _k2_units():
+    K2 = _K2()
+    return K2.from_sympy(sqrt(3)), K2.from_sympy(sqrt(5)), K2.from_sympy(sqrt(15))
+
+
+def _to_K2_fast(e) -> object:
+    """Fast conversion of a real sympy number a + b sqrt3 + c sqrt5 + d sqrt15 (rational a..d)
+    to Q(sqrt3, sqrt5); raises ValueError for anything else (e.g. complex numbers)."""
+    K2 = _K2()
+    e = _c2(sp.sympify(e))
+    s3, s5, s15 = sqrt(3), sqrt(5), sqrt(15)
+    b, c, d = e.coeff(s3), e.coeff(s5), e.coeff(s15)
+    a = sp.expand(e - b * s3 - c * s5 - d * s15)
+    parts = (a, b, c, d)
+    if not all(x.is_Rational for x in parts):
+        raise ValueError(f"{e} is not in Q(sqrt3, sqrt5)")
+    u3, u5, u15 = _k2_units()
+    conv = lambda r: K2.convert(QQ(int(r.p), int(r.q)))
+    return conv(a) + conv(b) * u3 + conv(c) * u5 + conv(d) * u15
+
+
 @dataclass(frozen=True)
 class QuarticForm:
     """An I-invariant quartic form F(eta) = sum_{p,q} M[p,q] conj(eta^p) eta^q on the
@@ -655,15 +677,73 @@ def weak_coupling_ratio_exact(name: str, e: Sequence) -> sp.Expr:
     e.g. ``(1, 0, 0)`` or ``(1, I, 0)``; any normalisation), evaluated in exact arithmetic:
     the quartic form at (e, conj e) divided by (e.conj e)^2.  The real state (1, 0, ...) and
     the null-cone state (1, i, 0, ...) give the closed forms 9/5, 6/5 (T1); 5061/2145,
-    3374/2145 (T2); 15/7, 10/7 (H) of Eq. (22)."""
+    3374/2145 (T2); 15/7, 10/7 (H) of Eq. (22).  Real vectors with components in
+    Q(sqrt3, sqrt5) are evaluated through the exact form matrix (fast); other exact vectors
+    (e.g. complex) through sympy substitution."""
     q = quartic_invariants(name)
     vals = [sp.sympify(x) for x in e]
     if len(vals) != q.dim:
         raise ValueError(f"{name}: expected {q.dim} components, got {len(vals)}")
+    try:
+        ke = [_to_K2_fast(v) for v in vals]
+    except ValueError:
+        ke = None
+    if ke is not None:                                   # real vector: bilinear form over K2
+        K2 = _K2()
+        pairs = pair_index(q.dim)
+        mon = [ke[i] * ke[j] for (i, j) in pairs]
+        M = q.quartic.matrix.to_list()
+        num = K2.zero
+        for pi, mp in enumerate(mon):
+            for qi, mq in enumerate(mon):
+                num += mp * M[pi][qi] * mq
+        norm2 = sum((x * x for x in ke), K2.zero)
+        return _c2(K2.to_sympy(num / (norm2 * norm2)))
     sub = {**dict(zip(q.eta, vals)), **{s: sp.conjugate(v) for s, v in zip(q.etab, vals)}}
     num = sp.expand(q.expr("quartic").subs(sub, simultaneous=True))
     norm2 = sp.expand(sum(v * sp.conjugate(v) for v in vals))
     return _c2(num / norm2**2)
+
+
+@lru_cache(maxsize=None)
+def _matrices_K2(name: str) -> Tuple[DomainMatrix, ...]:
+    """The exact irrep matrices D(g) of a channel as DomainMatrices over Q(sqrt3, sqrt5)."""
+    ch = channel(name)
+    return tuple(_dm2([[_to_K2_fast(D[i, j]) for j in range(ch.dim)] for i in range(ch.dim)])
+                 for D in ch.matrices)
+
+
+def fixed_space_exact(name: str, subgroup: str, character: str) -> List[List[sp.Expr]]:
+    """The fixed space {eta : D(g) eta = chi(g) eta, g in K} computed EXACTLY (null space over
+    Q(sqrt3, sqrt5)) for a one-dimensional character with values +-1 (D2 A/B1/B2/B3, D3 and D5
+    A1/A2, T A, I A); returns a basis as lists of exact numbers.  Complex characters (C_n chi_m,
+    T 1E/2E) would need the cyclotomic field and raise ValueError."""
+    chi = dict(characters_1d(subgroup))[character]
+    if any(abs(v.imag) > 1e-12 or abs(abs(v) - 1) > 1e-12 for v in chi.values()):
+        raise ValueError(f"{subgroup} {character}: only real (+-1) characters are handled exactly")
+    K2 = _K2()
+    d = channel(name).dim
+    Ds = _matrices_K2(name)
+    rows = []
+    for g, v in chi.items():
+        sgn = K2.one if v.real > 0 else -K2.one
+        Dg = Ds[g].to_list()
+        for i in range(d):
+            rows.append([Dg[i][j] - (sgn if i == j else K2.zero) for j in range(d)])
+    N = _dm2(rows).nullspace()
+    return [[K2.to_sympy(x) for x in row] for row in N.to_list()]
+
+
+def exact_ratio_of_fixed_state(name: str, subgroup: str, character: str) -> Optional[sp.Expr]:
+    """R_wc of the symmetry-fixed state (K, chi) in exact arithmetic, when chi is real and the
+    fixed space is one-dimensional; None otherwise (the C_n chi_m and T 1E/2E states)."""
+    try:
+        basis = fixed_space_exact(name, subgroup, character)
+    except ValueError:
+        return None
+    if len(basis) != 1:
+        return None
+    return weak_coupling_ratio_exact(name, basis[0])
 
 
 @lru_cache(maxsize=None)

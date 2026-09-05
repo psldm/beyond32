@@ -191,7 +191,14 @@ def gl_section(fast: bool = False) -> Dict[str, Any]:
     rows = gl.isotropy_table()
     fixed = gl.symmetry_fixed_states()
     fixed_keys = {(r.channel, r.subgroup, r.character) for r in fixed}
+    def r_exact(r):
+        if r.dim_fixed != 1:
+            return None
+        val = gl.exact_ratio_of_fixed_state(r.channel, r.subgroup, r.character)
+        return None if val is None else str(val)
+
     out["isotropy"] = [{**dataclasses.asdict(r), "R_fraction": rational_if_close(r.R) if r.R is not None else None,
+                        "R_exact": r_exact(r),
                         "moduli": None if r.eta is None else np.abs(r.eta),
                         "table7": (r.channel, r.subgroup, r.character) in fixed_keys} for r in rows]
     out["subgroup_orders"] = {k: len(v) for k, v in gl.subgroups().items()}

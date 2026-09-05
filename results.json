@@ -2,20 +2,20 @@
  "package": {
   "name": "beyond32",
   "version": "1.0.0",
-  "generated": "2026-09-05T01:10:54",
+  "generated": "2026-09-05T01:23:55",
   "fast": false,
   "lmax": 6,
   "runtime_seconds": {
-   "groups": 2.42,
-   "harmonics": 8.35,
-   "molien": 0.65,
-   "restrictions": 0.22,
+   "groups": 2.71,
+   "harmonics": 8.61,
+   "molien": 0.7,
+   "restrictions": 0.21,
    "shells": 0.57,
    "double_group": 0.14,
-   "gl": 9.84,
-   "d12": 0.15
+   "gl": 11.62,
+   "d12": 0.17
   },
-  "runtime_total_seconds": 22.34
+  "runtime_total_seconds": 24.73
  },
  "groups": {
   "I": {
@@ -3098,6 +3098,7 @@
     "min_gap": 0.005253475255305974,
     "stabiliser_order": 4,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      0.0,
      0.0,
@@ -3118,6 +3119,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -3147,6 +3149,7 @@
     "min_gap": 2.593155087752309e-06,
     "stabiliser_order": 6,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -3180,6 +3183,7 @@
     "min_gap": 0.001348943808553062,
     "stabiliser_order": 3,
     "R_fraction": "6/5",
+    "R_exact": null,
     "moduli": [
      0.5773502691896257,
      0.577350269189626,
@@ -3213,6 +3217,7 @@
     "min_gap": 0.00134894380855301,
     "stabiliser_order": 3,
     "R_fraction": "6/5",
+    "R_exact": null,
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -3246,6 +3251,7 @@
     "min_gap": 1.8319461780830576e-33,
     "stabiliser_order": 10,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      0.85065080835204,
      0.5257311121191335,
@@ -3279,6 +3285,7 @@
     "min_gap": 0.005762040411123844,
     "stabiliser_order": 5,
     "R_fraction": "6/5",
+    "R_exact": null,
     "moduli": [
      0.3717480344601845,
      0.6015009550075456,
@@ -3312,6 +3319,7 @@
     "min_gap": 0.005762040411123871,
     "stabiliser_order": 5,
     "R_fraction": "6/5",
+    "R_exact": null,
     "moduli": [
      0.37174803446018445,
      0.6015009550075456,
@@ -3336,6 +3344,7 @@
     "min_gap": 0.005253475255305974,
     "stabiliser_order": 4,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      0.0,
      0.0,
@@ -3360,6 +3369,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      0.0,
      1.0,
@@ -3384,6 +3394,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      1.0,
      0.0,
@@ -3408,6 +3419,7 @@
     "min_gap": 2.593155087624112e-06,
     "stabiliser_order": 6,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      0.5773502691896257,
      0.5773502691896257,
@@ -3432,6 +3444,7 @@
     "min_gap": 5.284851775778634e-34,
     "stabiliser_order": 10,
     "R_fraction": "9/5",
+    "R_exact": "9/5",
     "moduli": [
      0.85065080835204,
      0.5257311121191336,
@@ -3465,6 +3478,7 @@
     "min_gap": 1.2789790649888655e-06,
     "stabiliser_order": 4,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      0.0,
      0.0,
@@ -3485,6 +3499,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -3514,6 +3529,7 @@
     "min_gap": 2.3031633811486173e-06,
     "stabiliser_order": 6,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -3547,6 +3563,7 @@
     "min_gap": 0.0015322715286512274,
     "stabiliser_order": 3,
     "R_fraction": "3374/2145",
+    "R_exact": null,
     "moduli": [
      0.5773502691896257,
      0.577350269189626,
@@ -3580,6 +3597,7 @@
     "min_gap": 0.0015322715286511853,
     "stabiliser_order": 3,
     "R_fraction": "3374/2145",
+    "R_exact": null,
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -3613,6 +3631,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 10,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      0.5257311121191335,
      0.8506508083520401,
@@ -3646,6 +3665,7 @@
     "min_gap": 5.558886167600944e-05,
     "stabiliser_order": 5,
     "R_fraction": "3374/2145",
+    "R_exact": null,
     "moduli": [
      0.6015009550075455,
      0.37174803446018456,
@@ -3679,6 +3699,7 @@
     "min_gap": 5.558886167600598e-05,
     "stabiliser_order": 5,
     "R_fraction": "3374/2145",
+    "R_exact": null,
     "moduli": [
      0.6015009550075456,
      0.3717480344601847,
@@ -3703,6 +3724,7 @@
     "min_gap": 1.2789790649888655e-06,
     "stabiliser_order": 4,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      0.0,
      0.0,
@@ -3727,6 +3749,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      0.0,
      1.0,
@@ -3751,6 +3774,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      1.0,
      0.0,
@@ -3775,6 +3799,7 @@
     "min_gap": 2.3031633811486173e-06,
     "stabiliser_order": 6,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -3799,6 +3824,7 @@
     "min_gap": 5.343809212661458e-33,
     "stabiliser_order": 10,
     "R_fraction": "1687/715",
+    "R_exact": "1687/715",
     "moduli": [
      0.5257311121191337,
      0.85065080835204,
@@ -3819,6 +3845,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -3835,6 +3862,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -3851,6 +3879,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -3884,6 +3913,7 @@
     "min_gap": 0.0020256214326886133,
     "stabiliser_order": 3,
     "R_fraction": "84/55",
+    "R_exact": null,
     "moduli": [
      0.5773502691896257,
      0.577350269189626,
@@ -3922,6 +3952,7 @@
     "min_gap": 0.0020256214326887043,
     "stabiliser_order": 3,
     "R_fraction": "84/55",
+    "R_exact": null,
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -3960,6 +3991,7 @@
     "min_gap": 1.5372632158670318e-06,
     "stabiliser_order": 5,
     "R_fraction": "1148/715",
+    "R_exact": null,
     "moduli": [
      0.6881909602355868,
      0.1624598481164531,
@@ -3998,6 +4030,7 @@
     "min_gap": 4.6157480868565336e-05,
     "stabiliser_order": 5,
     "R_fraction": "1148/715",
+    "R_exact": null,
     "moduli": [
      0.16245984811645317,
      0.6881909602355869,
@@ -4036,6 +4069,7 @@
     "min_gap": 4.6157480868567105e-05,
     "stabiliser_order": 5,
     "R_fraction": "1148/715",
+    "R_exact": null,
     "moduli": [
      0.1624598481164533,
      0.6881909602355869,
@@ -4074,6 +4108,7 @@
     "min_gap": 1.537263215866566e-06,
     "stabiliser_order": 5,
     "R_fraction": "1148/715",
+    "R_exact": null,
     "moduli": [
      0.6881909602355867,
      0.16245984811645311,
@@ -4100,6 +4135,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 12,
     "R_fraction": "315/143",
+    "R_exact": "315/143",
     "moduli": [
      0.0,
      0.0,
@@ -4126,6 +4162,7 @@
     "min_gap": 6.870249687085157e-06,
     "stabiliser_order": 4,
     "R_fraction": "1743/715",
+    "R_exact": "1743/715",
     "moduli": [
      0.0,
      0.0,
@@ -4152,6 +4189,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "1743/715",
+    "R_exact": "1743/715",
     "moduli": [
      0.0,
      1.0,
@@ -4178,6 +4216,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "1743/715",
+    "R_exact": "1743/715",
     "moduli": [
      1.0,
      0.0,
@@ -4204,6 +4243,7 @@
     "min_gap": 1.7182429172695964e-09,
     "stabiliser_order": 6,
     "R_fraction": "350/143",
+    "R_exact": "350/143",
     "moduli": [
      0.4564354645876385,
      0.4564354645876385,
@@ -4230,6 +4270,7 @@
     "min_gap": 7.998953802263627e-07,
     "stabiliser_order": 6,
     "R_fraction": "126/55",
+    "R_exact": "126/55",
     "moduli": [
      0.3535533905932738,
      0.3535533905932737,
@@ -4268,6 +4309,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 12,
     "R_fraction": "315/143",
+    "R_exact": "315/143",
     "moduli": [
      0.0,
      0.0,
@@ -4289,6 +4331,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -4305,6 +4348,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -4342,6 +4386,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 6,
     "R_fraction": "15/7",
+    "R_exact": "15/7",
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -4364,6 +4409,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -4380,6 +4426,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -4417,6 +4464,7 @@
     "min_gap": 8.100393044210082e-06,
     "stabiliser_order": 10,
     "R_fraction": "15/7",
+    "R_exact": "15/7",
     "moduli": [
      0.7745966692414833,
      0.0,
@@ -4460,6 +4508,7 @@
     "min_gap": 5.461413195865097e-18,
     "stabiliser_order": 5,
     "R_fraction": "10/7",
+    "R_exact": null,
     "moduli": [
      0.31622776601683794,
      0.37174803446018456,
@@ -4503,6 +4552,7 @@
     "min_gap": 3.32011096993797e-05,
     "stabiliser_order": 5,
     "R_fraction": "10/7",
+    "R_exact": null,
     "moduli": [
      0.31622776601683794,
      0.6015009550075456,
@@ -4546,6 +4596,7 @@
     "min_gap": 3.320110969929097e-05,
     "stabiliser_order": 5,
     "R_fraction": "10/7",
+    "R_exact": null,
     "moduli": [
      0.31622776601683783,
      0.6015009550075456,
@@ -4589,6 +4640,7 @@
     "min_gap": 1.3883872239878348e-17,
     "stabiliser_order": 5,
     "R_fraction": "10/7",
+    "R_exact": null,
     "moduli": [
      0.3162277660168379,
      0.3717480344601845,
@@ -4611,6 +4663,7 @@
     "min_gap": null,
     "stabiliser_order": null,
     "R_fraction": null,
+    "R_exact": null,
     "moduli": null,
     "table7": false
    },
@@ -4633,6 +4686,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "15/7",
+    "R_exact": "15/7",
     "moduli": [
      1.0,
      0.0,
@@ -4661,6 +4715,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "15/7",
+    "R_exact": "15/7",
     "moduli": [
      0.0,
      0.0,
@@ -4689,6 +4744,7 @@
     "min_gap": 0.0,
     "stabiliser_order": 4,
     "R_fraction": "15/7",
+    "R_exact": "15/7",
     "moduli": [
      0.0,
      1.0,
@@ -4717,6 +4773,7 @@
     "min_gap": 2.740981118645005e-19,
     "stabiliser_order": 6,
     "R_fraction": "15/7",
+    "R_exact": "15/7",
     "moduli": [
      0.5773502691896258,
      0.5773502691896258,
@@ -4745,6 +4802,7 @@
     "min_gap": 8.10039304421008e-06,
     "stabiliser_order": 10,
     "R_fraction": "15/7",
+    "R_exact": "15/7",
     "moduli": [
      0.7745966692414834,
      0.0,
@@ -4788,6 +4846,7 @@
     "min_gap": 0.0019085347691174905,
     "stabiliser_order": 12,
     "R_fraction": "10/7",
+    "R_exact": null,
     "moduli": [
      0.0,
      0.0,
@@ -4831,6 +4890,7 @@
     "min_gap": 0.0019085347691174912,
     "stabiliser_order": 12,
     "R_fraction": "10/7",
+    "R_exact": null,
     "moduli": [
      0.0,
      0.0,

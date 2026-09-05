@@ -107,15 +107,16 @@ minimum 1.527212900 and the H candidate rows (`gl_states`).
   tests whether η* is a rotation image of η (true for the chiral axial states via the
   perpendicular C2); the paper's TR column is I2 = I1.  Both flags are kept
   (`time_reversal`, `tr_up_to_rotation`).
-* **Table 7, G channel.** The symmetry-fixed G states have rational weak-coupling ratios
-  (315/143, 1743/715, 350/143, 126/55; chiral 1148/715, 84/55), which the paper quotes as
-  decimals.  `gl.weak_coupling_ratio_exact` evaluates the quartic form in exact arithmetic at
-  an exact order parameter (`test_gl` pins 315/143 for xyz, 1743/715 for g_x and 84/55 for
-  (1, ω, ω², 0), as well as the Eq. 22 closed forms 9/5, 6/5, 5061/2145, 3374/2145, 15/7,
-  10/7 that `results.json` records under `weak_coupling_minima.*.real` / `.null_cone`); the
-  `R_fraction` entries of the numerically found fixed states in `results.json` are recognised
-  from the float with `Fraction.limit_denominator(5000)` at tolerance 10⁻⁹.  `tab_states.tex`
-  prints decimals for G as the paper does.
+* **Table 7 ratios.** The symmetry-fixed G states have rational weak-coupling ratios
+  (315/143 for xyz, 1743/715 for g_x, 350/143 for D3 A1, 126/55 for D3 A2; chiral 1148/715 for
+  C5 and 84/55 for C3).  For every state fixed by a real (±1) character the fixed space is
+  recomputed exactly (null space over Q(√3, √5) of the exact irrep matrices,
+  `gl.fixed_space_exact`) and R is evaluated in exact arithmetic (`gl.weak_coupling_ratio_exact`,
+  `results.json` key `R_exact`); `tab_states.tex` prints these fractions, and 1687/715 (the
+  paper's 5061/2145) for the polar T2 states.  For the chiral C_n states (complex characters)
+  the fraction is recognised from the numerical value (`Fraction.limit_denominator(5000)`,
+  tolerance 10⁻⁹) and checked to double precision; 84/55 for (1, ω, ω², 0) is also verified
+  exactly.  The G ground state of Eq. (23) is printed as 1.5255.
 * **Fractions** are printed reduced: the paper's 5061/2145 (real T2 states) is 1687/715.
 * **Table 8** is computed with the legacy quadrature for the coordinates of the candidate
   functions (300 × 600 grid), so the digits agree with the paper.
@@ -130,8 +131,9 @@ minimum 1.527212900 and the H candidate rows (`gl_states`).
   The numbers of terms of the invariants N_L printed by `gl_inv2.py` (T1 9/12; T2 9/12/12/12;
   G 16/21/28/28; H 25/52/53 for N0/N2/…) are reproduced (`results.json` `gl.N_terms`).
 * **Naming.** The D12 material is Section 10 of the paper, cross-referenced there as
-  "Appendix 10"; the legacy README calls it "Appendix B".  `REFACTOR_PLAN.md` is the planning
-  document written before the port; several function names it proposes were changed during
+  "Appendix 10"; the legacy README calls it "Appendix B".  The planning document
+  `REFACTOR_PLAN.md` (kept in the git history up to the release commit) was written before the
+  port; several function names it proposes were changed during
   implementation (e.g. `harmonics.rep_matrix` → `rep_matrices`, `gl.invariants_NL` →
   `quartic_invariants`, `gl.g_ground_state_exact` → `g_stratum`), and the D12 character
   extraction ended up exact rather than a least-squares fit; README.md and this report describe
