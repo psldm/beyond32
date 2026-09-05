@@ -6,8 +6,7 @@ version: 1.0.0
 date-released: 2026-09-05
 license: MIT
 repository-code: "https://github.com/psldm/beyond32"
-# placeholder -- replace with the Zenodo concept DOI minted at release (see README, "How to cite")
-doi: "10.5281/zenodo.XXXXXXX"
+doi: "10.5281/zenodo.22335534"
 authors:
   - family-names: Moss
     given-names: Eva

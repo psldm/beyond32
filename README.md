@@ -1,5 +1,7 @@
 # beyond32 — superconducting pairing channels of the icosahedral group
 
+[![DOI](https://zenodo.org/badge/1357954462.svg)](https://doi.org/10.5281/zenodo.22335534)
+
 Companion code of
 
 > Eva Moss, *Beyond the 32: Superconducting Pairing Channels of the Icosahedral Group —
@@ -134,7 +136,7 @@ tests/                    one test module per computational module (results.py a
 Please cite the paper and the software release (see `CITATION.cff`):
 
 * E. Moss, *Beyond the 32: Superconducting Pairing Channels of the Icosahedral Group* (2026).
-* E. Moss, *beyond32* v1.0.0, Zenodo, DOI: 10.5281/zenodo.XXXXXXX (to be filled at release).
+* E. Moss, *beyond32* v1.0.0, Zenodo, DOI: [10.5281/zenodo.22335534](https://doi.org/10.5281/zenodo.22335534).
 
 ## License
 
