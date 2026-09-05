@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "beyond32"
+version = "1.0.0"
+description = "Superconducting pairing channels of the icosahedral group: exact group theory, branching, and Ginzburg-Landau invariants (companion code of Moss 2026)."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Eva Moss"}]
+requires-python = ">=3.10"
+dependencies = [
+    "sympy>=1.12",
+    "numpy>=1.24",
+    "scipy>=1.10",
+]
+keywords = ["icosahedral group", "quasicrystal", "superconductivity", "Ginzburg-Landau", "representation theory"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+beyond32 = "beyond32.cli:main"
+
+[project.urls]
+Repository = "https://github.com/psldm/beyond32"
+
+[tool.setuptools]
+packages = ["beyond32"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: takes more than about a minute; deselect with -m 'not slow'",
+]
