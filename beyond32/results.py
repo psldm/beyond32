@@ -66,6 +66,20 @@ def phi_str(e) -> str:
     return str(phi_form(e))
 
 
+def poly_terms(poly) -> list:
+    """A polynomial in x, y, z with coefficients in Q(sqrt5) as a list of
+    [[a, b, c], p, q] with coefficient p + q*varphi (p, q rational strings), terms ordered by
+    descending exponents of x, then y, then z."""
+    from ._exact import ab as _ab
+    from .harmonics import coeff_dict
+
+    out = []
+    for e, c in sorted(coeff_dict(poly).items(), reverse=True):
+        a, b = _ab(c)                      # c = a + b sqrt5 = (a - b) + 2b varphi
+        out.append([list(e), str(a - b), str(2 * b)])
+    return out
+
+
 # --------------------------------------------------------------------------- sections
 def groups_section() -> Dict[str, Any]:
     from . import groups as g
@@ -102,6 +116,9 @@ def harmonics_section(lmax: int = 6, fast: bool = False) -> Dict[str, Any]:
         "branching_by_characters": {l: h.branching_by_characters(l) for l in range(lmax + 1)},
         "basis_functions": {f"l={l},{irr}": {name: str(h.phi_form_poly(f)) for name, f in funcs.items()}
                             for (l, irr), funcs in h.paper_basis_functions().items()},
+        "basis_functions_terms": {f"l={l},{irr}": {name: poly_terms(f) for name, f in funcs.items()}
+                                  for (l, irr), funcs in h.paper_basis_functions().items()},
+        "P6_terms": poly_terms(h.invariant_P6()),
         "seed_functions": {f"l={l},{irr},seed={s}": str(h.phi_form_poly(f))
                            for (l, irr, s), f in h.seed_basis_functions().items()},
         "P6": str(h.phi_form_poly(h.invariant_P6())),

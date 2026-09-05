@@ -21,8 +21,15 @@ def test_tex_irrep_names():
 def test_tex_decomposition_and_numbers():
     assert latex.tex_decomposition({"A": 1, "H": 2}) == r"A \oplus 2\,H"
     assert latex.tex_num("1 - varphi") == r"1 - \varphi"
-    assert latex.tex_num("-2/35") == r"\tfrac{-2}{35}"
-    assert latex.tex_poly("x**3 - 3*varphi*x*z**2") == r"x^{3} - 3 \varphi x z^{2}"
+    assert latex.tex_num("-2/35") == r"-\tfrac{2}{35}"
+    assert latex.tex_phi_coeff("1/15", "-7/15") == r"\tfrac{1 - 7\varphi}{15}"
+    assert latex.tex_phi_coeff("0", "-3") == r"-3\varphi"
+    assert latex.tex_phi_coeff("-3", "3") == r"3\varphi - 3"
+    assert latex.tex_phi_coeff("-1/3", "1/3") == r"\tfrac{\varphi - 1}{3}"
+    assert latex.tex_phi_coeff("0", "-1/3") == r"-\tfrac{\varphi}{3}"
+    f_x = [[[3, 0, 0], "1", "0"], [[1, 2, 0], "-3", "3"], [[1, 0, 2], "0", "-3"]]
+    assert latex.tex_poly_terms(f_x) == r"x^{3} + (3\varphi - 3)\,xy^{2} - 3\varphi\,xz^{2}"
+    assert latex.tex_decomposition({"4s": 1, "6": 2}) == r"4_s \oplus 2\cdot 6"
 
 
 @pytest.mark.slow
