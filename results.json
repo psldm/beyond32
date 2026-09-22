@@ -1,8 +1,8 @@
 {
  "package": {
   "name": "beyond32",
-  "version": "1.0.0",
-  "generated": "2026-09-05T01:23:55",
+  "version": "1.1.0",
+  "generated": "2026-09-22T11:10:54",
   "fast": false,
   "lmax": 6,
   "runtime_seconds": {
@@ -13,9 +13,9 @@
    "shells": 0.57,
    "double_group": 0.14,
    "gl": 11.62,
-   "d12": 0.17
+   "d6d": 0.27
   },
-  "runtime_total_seconds": 24.73
+  "runtime_total_seconds": 24.83
  },
  "groups": {
   "I": {
@@ -5205,7 +5205,7 @@
    }
   }
  },
- "d12": {
+ "d6d": {
   "order": 24,
   "irreps": [
    "A1",
@@ -5218,17 +5218,278 @@
    "E4",
    "E5"
   ],
+  "generators": {
+   "S12": [
+    [
+     "sqrt(3)/2",
+     "-1/2",
+     "0"
+    ],
+    [
+     "1/2",
+     "sqrt(3)/2",
+     "0"
+    ],
+    [
+     "0",
+     "0",
+     "-1"
+    ]
+   ],
+   "C2prime_15deg": [
+    [
+     "sqrt(3)/2",
+     "1/2",
+     "0"
+    ],
+    [
+     "1/2",
+     "-sqrt(3)/2",
+     "0"
+    ],
+    [
+     "0",
+     "0",
+     "-1"
+    ]
+   ]
+  },
+  "facts": {
+   "order": 24,
+   "n_classes": 9,
+   "inversion": false,
+   "horizontal_mirror": false,
+   "true_twelvefold_rotation": false,
+   "S12_order": 12,
+   "proper_rotation_orders": {
+    "1": 1,
+    "2": 7,
+    "3": 2,
+    "6": 2
+   },
+   "max_proper_rotation_order": 6,
+   "mirror_directions_deg": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150
+   ],
+   "twofold_axes_deg": [
+    15,
+    45,
+    75,
+    105,
+    135,
+    165
+   ]
+  },
+  "elements": [
+   {
+    "index": 0,
+    "label": "E",
+    "class": "E",
+    "det": 1,
+    "zz": 1,
+    "order": 1
+   },
+   {
+    "index": 1,
+    "label": "S12",
+    "class": "S12",
+    "det": -1,
+    "zz": -1,
+    "order": 12
+   },
+   {
+    "index": 2,
+    "label": "C6",
+    "class": "C6",
+    "det": 1,
+    "zz": 1,
+    "order": 6
+   },
+   {
+    "index": 3,
+    "label": "S4",
+    "class": "S4",
+    "det": -1,
+    "zz": -1,
+    "order": 4
+   },
+   {
+    "index": 4,
+    "label": "C3",
+    "class": "C3",
+    "det": 1,
+    "zz": 1,
+    "order": 3
+   },
+   {
+    "index": 5,
+    "label": "S12^5",
+    "class": "S12^5",
+    "det": -1,
+    "zz": -1,
+    "order": 12
+   },
+   {
+    "index": 6,
+    "label": "C2",
+    "class": "C2",
+    "det": 1,
+    "zz": 1,
+    "order": 2
+   },
+   {
+    "index": 7,
+    "label": "S12^7",
+    "class": "S12^5",
+    "det": -1,
+    "zz": -1,
+    "order": 12
+   },
+   {
+    "index": 8,
+    "label": "C3^2",
+    "class": "C3",
+    "det": 1,
+    "zz": 1,
+    "order": 3
+   },
+   {
+    "index": 9,
+    "label": "S4^3",
+    "class": "S4",
+    "det": -1,
+    "zz": -1,
+    "order": 4
+   },
+   {
+    "index": 10,
+    "label": "C6^5",
+    "class": "C6",
+    "det": 1,
+    "zz": 1,
+    "order": 6
+   },
+   {
+    "index": 11,
+    "label": "S12^11",
+    "class": "S12",
+    "det": -1,
+    "zz": -1,
+    "order": 12
+   },
+   {
+    "index": 12,
+    "label": "sigma_d(0)",
+    "class": "sigma_d",
+    "det": -1,
+    "zz": 1,
+    "order": 2
+   },
+   {
+    "index": 13,
+    "label": "C2'(15)",
+    "class": "C2'",
+    "det": 1,
+    "zz": -1,
+    "order": 2
+   },
+   {
+    "index": 14,
+    "label": "sigma_d(30)",
+    "class": "sigma_d",
+    "det": -1,
+    "zz": 1,
+    "order": 2
+   },
+   {
+    "index": 15,
+    "label": "C2'(45)",
+    "class": "C2'",
+    "det": 1,
+    "zz": -1,
+    "order": 2
+   },
+   {
+    "index": 16,
+    "label": "sigma_d(60)",
+    "class": "sigma_d",
+    "det": -1,
+    "zz": 1,
+    "order": 2
+   },
+   {
+    "index": 17,
+    "label": "C2'(75)",
+    "class": "C2'",
+    "det": 1,
+    "zz": -1,
+    "order": 2
+   },
+   {
+    "index": 18,
+    "label": "sigma_d(90)",
+    "class": "sigma_d",
+    "det": -1,
+    "zz": 1,
+    "order": 2
+   },
+   {
+    "index": 19,
+    "label": "C2'(105)",
+    "class": "C2'",
+    "det": 1,
+    "zz": -1,
+    "order": 2
+   },
+   {
+    "index": 20,
+    "label": "sigma_d(120)",
+    "class": "sigma_d",
+    "det": -1,
+    "zz": 1,
+    "order": 2
+   },
+   {
+    "index": 21,
+    "label": "C2'(135)",
+    "class": "C2'",
+    "det": 1,
+    "zz": -1,
+    "order": 2
+   },
+   {
+    "index": 22,
+    "label": "sigma_d(150)",
+    "class": "sigma_d",
+    "det": -1,
+    "zz": 1,
+    "order": 2
+   },
+   {
+    "index": 23,
+    "label": "C2'(165)",
+    "class": "C2'",
+    "det": 1,
+    "zz": -1,
+    "order": 2
+   }
+  ],
   "character_table": {
    "classes": [
     "E",
-    "C12",
+    "S12",
     "C6",
-    "C4",
+    "S4",
     "C3",
-    "C12^5",
+    "S12^5",
     "C2",
     "C2'",
-    "C2''"
+    "sigma_d"
    ],
    "sizes": [
     1,
@@ -5370,218 +5631,582 @@
     }
    ]
   },
-  "assignment": [
+  "singlet": [
    {
     "m": 0,
-    "residue": 0,
-    "irreps": "A1"
-   },
-   {
-    "m": 1,
-    "residue": 1,
-    "irreps": "E1"
+    "irreps": "A1",
+    "basis": {
+     "A1": [
+      "1"
+     ]
+    }
    },
    {
     "m": 2,
-    "residue": 2,
-    "irreps": "E2"
-   },
-   {
-    "m": 3,
-    "residue": 3,
-    "irreps": "E3"
+    "irreps": "E2",
+    "basis": {
+     "E2": [
+      "cos(2*phi)",
+      "sin(2*phi)"
+     ]
+    }
    },
    {
     "m": 4,
-    "residue": 4,
-    "irreps": "E4"
-   },
-   {
-    "m": 5,
-    "residue": 5,
-    "irreps": "E5"
+    "irreps": "E4",
+    "basis": {
+     "E4": [
+      "cos(4*phi)",
+      "sin(4*phi)"
+     ]
+    }
    },
    {
     "m": 6,
-    "residue": 6,
-    "irreps": "B1 + B2"
-   },
-   {
-    "m": 7,
-    "residue": 7,
-    "irreps": "E5"
-   },
-   {
-    "m": 8,
-    "residue": 8,
-    "irreps": "E4"
-   },
-   {
-    "m": 9,
-    "residue": 9,
-    "irreps": "E3"
-   },
-   {
-    "m": 10,
-    "residue": 10,
-    "irreps": "E2"
-   },
-   {
-    "m": 11,
-    "residue": 11,
-    "irreps": "E1"
-   },
-   {
-    "m": 12,
-    "residue": 0,
-    "irreps": "A1 + A2"
+    "irreps": "B1 + B2",
+    "basis": {
+     "B1": [
+      "sin(6*phi)"
+     ],
+     "B2": [
+      "cos(6*phi)"
+     ]
+    }
    }
   ],
-  "residues": [
+  "triplet_inplane": [
    {
-    "residue": 0,
-    "irreps": "A1 + A2"
+    "m": 1,
+    "irreps": "B1 + B2 + E4",
+    "basis": {
+     "B1": [
+      [
+       "cos(phi)",
+       "sin(phi)",
+       "0"
+      ]
+     ],
+     "B2": [
+      [
+       "sin(phi)",
+       "-cos(phi)",
+       "0"
+      ]
+     ],
+     "E4": [
+      [
+       "cos(phi)",
+       "-sin(phi)",
+       "0"
+      ],
+      [
+       "sin(phi)",
+       "cos(phi)",
+       "0"
+      ]
+     ]
+    }
    },
    {
-    "residue": 1,
-    "irreps": "E1"
+    "m": 3,
+    "irreps": "E2 + E4",
+    "basis": {
+     "E2": [
+      [
+       "cos(3*phi)",
+       "-sin(3*phi)",
+       "0"
+      ],
+      [
+       "sin(3*phi)",
+       "cos(3*phi)",
+       "0"
+      ]
+     ],
+     "E4": [
+      [
+       "cos(3*phi)",
+       "sin(3*phi)",
+       "0"
+      ],
+      [
+       "sin(3*phi)",
+       "-cos(3*phi)",
+       "0"
+      ]
+     ]
+    }
    },
    {
-    "residue": 2,
-    "irreps": "E2"
-   },
-   {
-    "residue": 3,
-    "irreps": "E3"
-   },
-   {
-    "residue": 4,
-    "irreps": "E4"
-   },
-   {
-    "residue": 5,
-    "irreps": "E5"
-   },
-   {
-    "residue": 6,
-    "irreps": "B1 + B2"
-   },
-   {
-    "residue": 7,
-    "irreps": "E5"
-   },
-   {
-    "residue": 8,
-    "irreps": "E4"
-   },
-   {
-    "residue": 9,
-    "irreps": "E3"
-   },
-   {
-    "residue": 10,
-    "irreps": "E2"
-   },
-   {
-    "residue": 11,
-    "irreps": "E1"
+    "m": 5,
+    "irreps": "A1 + A2 + E2",
+    "basis": {
+     "A1": [
+      [
+       "sin(5*phi)",
+       "cos(5*phi)",
+       "0"
+      ]
+     ],
+     "A2": [
+      [
+       "cos(5*phi)",
+       "-sin(5*phi)",
+       "0"
+      ]
+     ],
+     "E2": [
+      [
+       "cos(5*phi)",
+       "sin(5*phi)",
+       "0"
+      ],
+      [
+       "sin(5*phi)",
+       "-cos(5*phi)",
+       "0"
+      ]
+     ]
+    }
    }
   ],
-  "nodes": [
+  "triplet_z": [
+   {
+    "m": 1,
+    "irreps": "E1",
+    "basis": {
+     "E1": [
+      [
+       "0",
+       "0",
+       "cos(phi)"
+      ],
+      [
+       "0",
+       "0",
+       "sin(phi)"
+      ]
+     ]
+    }
+   },
+   {
+    "m": 3,
+    "irreps": "E3",
+    "basis": {
+     "E3": [
+      [
+       "0",
+       "0",
+       "cos(3*phi)"
+      ],
+      [
+       "0",
+       "0",
+       "sin(3*phi)"
+      ]
+     ]
+    }
+   },
+   {
+    "m": 5,
+    "irreps": "E5",
+    "basis": {
+     "E5": [
+      [
+       "0",
+       "0",
+       "cos(5*phi)"
+      ],
+      [
+       "0",
+       "0",
+       "sin(5*phi)"
+      ]
+     ]
+    }
+   }
+  ],
+  "table10": [
    {
     "irrep": "A1",
-    "C2'": "-",
-    "C2''": "-",
-    "axis": "-",
-    "in-plane nodes": 0
+    "singlet": [
+     {
+      "m": 0,
+      "functions": [
+       "1"
+      ]
+     }
+    ],
+    "triplet": [
+     {
+      "m": 5,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "sin(5*phi)",
+        "cos(5*phi)",
+        "0"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "A2",
-    "C2'": "node",
-    "C2''": "node",
-    "axis": "-",
-    "in-plane nodes": 24
+    "singlet": [],
+    "triplet": [
+     {
+      "m": 5,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "cos(5*phi)",
+        "-sin(5*phi)",
+        "0"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "B1",
-    "C2'": "-",
-    "C2''": "node",
-    "axis": "node",
-    "in-plane nodes": 12
+    "singlet": [
+     {
+      "m": 6,
+      "functions": [
+       "sin(6*phi)"
+      ]
+     }
+    ],
+    "triplet": [
+     {
+      "m": 1,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "cos(phi)",
+        "sin(phi)",
+        "0"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "B2",
-    "C2'": "node",
-    "C2''": "-",
-    "axis": "node",
-    "in-plane nodes": 12
+    "singlet": [
+     {
+      "m": 6,
+      "functions": [
+       "cos(6*phi)"
+      ]
+     }
+    ],
+    "triplet": [
+     {
+      "m": 1,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "sin(phi)",
+        "-cos(phi)",
+        "0"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "E1",
-    "C2'": "-",
-    "C2''": "-",
-    "axis": "node",
-    "in-plane nodes": 0
+    "singlet": [],
+    "triplet": [
+     {
+      "m": 1,
+      "sector": "d_z",
+      "functions": [
+       [
+        "0",
+        "0",
+        "cos(phi)"
+       ],
+       [
+        "0",
+        "0",
+        "sin(phi)"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "E2",
-    "C2'": "-",
-    "C2''": "-",
-    "axis": "node",
-    "in-plane nodes": 0
+    "singlet": [
+     {
+      "m": 2,
+      "functions": [
+       "cos(2*phi)",
+       "sin(2*phi)"
+      ]
+     }
+    ],
+    "triplet": [
+     {
+      "m": 3,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "cos(3*phi)",
+        "-sin(3*phi)",
+        "0"
+       ],
+       [
+        "sin(3*phi)",
+        "cos(3*phi)",
+        "0"
+       ]
+      ]
+     },
+     {
+      "m": 5,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "cos(5*phi)",
+        "sin(5*phi)",
+        "0"
+       ],
+       [
+        "sin(5*phi)",
+        "-cos(5*phi)",
+        "0"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "E3",
-    "C2'": "-",
-    "C2''": "-",
-    "axis": "node",
-    "in-plane nodes": 0
+    "singlet": [],
+    "triplet": [
+     {
+      "m": 3,
+      "sector": "d_z",
+      "functions": [
+       [
+        "0",
+        "0",
+        "cos(3*phi)"
+       ],
+       [
+        "0",
+        "0",
+        "sin(3*phi)"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "E4",
-    "C2'": "-",
-    "C2''": "-",
-    "axis": "node",
-    "in-plane nodes": 0
+    "singlet": [
+     {
+      "m": 4,
+      "functions": [
+       "cos(4*phi)",
+       "sin(4*phi)"
+      ]
+     }
+    ],
+    "triplet": [
+     {
+      "m": 1,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "cos(phi)",
+        "-sin(phi)",
+        "0"
+       ],
+       [
+        "sin(phi)",
+        "cos(phi)",
+        "0"
+       ]
+      ]
+     },
+     {
+      "m": 3,
+      "sector": "in-plane",
+      "functions": [
+       [
+        "cos(3*phi)",
+        "sin(3*phi)",
+        "0"
+       ],
+       [
+        "sin(3*phi)",
+        "-cos(3*phi)",
+        "0"
+       ]
+      ]
+     }
+    ]
    },
    {
     "irrep": "E5",
-    "C2'": "-",
-    "C2''": "-",
-    "axis": "node",
-    "in-plane nodes": 0
+    "singlet": [],
+    "triplet": [
+     {
+      "m": 5,
+      "sector": "d_z",
+      "functions": [
+       [
+        "0",
+        "0",
+        "cos(5*phi)"
+       ],
+       [
+        "0",
+        "0",
+        "sin(5*phi)"
+       ]
+      ]
+     }
+    ]
    }
   ],
-  "sym2": [
-   {
-    "irrep": "E1",
-    "Sym^2": "A1 + E2",
-    "quartic invariants": 2
+  "asoc": {
+   "A1_content": {
+    "1": {
+     "inplane": 0,
+     "z": 0
+    },
+    "3": {
+     "inplane": 0,
+     "z": 0
+    },
+    "5": {
+     "inplane": 1,
+     "z": 0
+    }
    },
-   {
-    "irrep": "E2",
-    "Sym^2": "A1 + E4",
-    "quartic invariants": 2
+   "g": [
+    "sin(5*phi)",
+    "cos(5*phi)",
+    "0"
+   ]
+  },
+  "restriction_D2d": {
+   "classes": [
+    "E",
+    "S4",
+    "C2",
+    "C2'",
+    "sigma_d"
+   ],
+   "sizes": [
+    1,
+    2,
+    1,
+    2,
+    2
+   ],
+   "character_table": {
+    "classes": [
+     "E",
+     "S4",
+     "C2",
+     "C2'",
+     "sigma_d"
+    ],
+    "sizes": [
+     1,
+     2,
+     1,
+     2,
+     2
+    ],
+    "rows": [
+     {
+      "irrep": "A1",
+      "chars": [
+       "1",
+       "1",
+       "1",
+       "1",
+       "1"
+      ]
+     },
+     {
+      "irrep": "A2",
+      "chars": [
+       "1",
+       "1",
+       "1",
+       "-1",
+       "-1"
+      ]
+     },
+     {
+      "irrep": "B1",
+      "chars": [
+       "1",
+       "-1",
+       "1",
+       "1",
+       "-1"
+      ]
+     },
+     {
+      "irrep": "B2",
+      "chars": [
+       "1",
+       "-1",
+       "1",
+       "-1",
+       "1"
+      ]
+     },
+     {
+      "irrep": "E",
+      "chars": [
+       "2",
+       "0",
+       "-2",
+       "0",
+       "0"
+      ]
+     }
+    ]
    },
-   {
-    "irrep": "E3",
-    "Sym^2": "A1 + B1 + B2",
-    "quartic invariants": 3
-   },
-   {
-    "irrep": "E4",
-    "Sym^2": "A1 + E4",
-    "quartic invariants": 2
-   },
-   {
-    "irrep": "E5",
-    "Sym^2": "A1 + E2",
-    "quartic invariants": 2
+   "table": {
+    "A1": "A1",
+    "A2": "A2",
+    "B1": "B1",
+    "B2": "B2",
+    "E1": "E",
+    "E2": "B1 + B2",
+    "E3": "E",
+    "E4": "A1 + A2",
+    "E5": "E"
    }
-  ],
-  "weak_coupling": {
-   "real": "3/2",
-   "chiral": "1"
+  },
+  "field_orbit": {
+   "angles_deg": [
+    0,
+    30,
+    60,
+    90,
+    120,
+    150,
+    180,
+    210,
+    240,
+    270,
+    300,
+    330
+   ],
+   "period_deg": 30
   }
  }
 }

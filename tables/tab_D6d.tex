@@ -1,0 +1,21 @@
+% Table 10 (Appendix B): pairing functions on the in-plane circle of the dodecagonal point group D6d = -12m2 of Ta1.6Te (Yamamoto 2004): singlet psi(phi) (even m <= 6) and triplet d-vector (odd m <= 5) per irrep
+% singlet: psi -> psi(g^-1 k); triplet: d = (d_x, d_y, d_z) -> det(g) g d(g^-1 k); basis functions from the exact isotypic projectors (reduced row echelon form); -- = nothing with |m| <= 6
+\begin{tabular}{lll}
+\hline
+irrep & singlet part & triplet part \\
+\hline
+$A_1$ & $1$ & $(\sin 5\phi, \cos 5\phi, 0)$ \\
+$A_2$ & -- & $(\cos 5\phi, -\sin 5\phi, 0)$ \\
+$B_1$ & $\sin 6\phi$ & $(\cos\phi, \sin\phi, 0)$ \\
+$B_2$ & $\cos 6\phi$ & $(\sin\phi, -\cos\phi, 0)$ \\
+$E_1$ & -- & $\{(0, 0, \cos\phi), (0, 0, \sin\phi)\}$ \\
+$E_2$ & $\{\cos 2\phi, \sin 2\phi\}$ & $\{(\cos 3\phi, -\sin 3\phi, 0), (\sin 3\phi, \cos 3\phi, 0)\};\ \{(\cos 5\phi, \sin 5\phi, 0), (\sin 5\phi, -\cos 5\phi, 0)\}$ \\
+$E_3$ & -- & $\{(0, 0, \cos 3\phi), (0, 0, \sin 3\phi)\}$ \\
+$E_4$ & $\{\cos 4\phi, \sin 4\phi\}$ & $\{(\cos\phi, -\sin\phi, 0), (\sin\phi, \cos\phi, 0)\};\ \{(\cos 3\phi, \sin 3\phi, 0), (\sin 3\phi, -\cos 3\phi, 0)\}$ \\
+$E_5$ & -- & $\{(0, 0, \cos 5\phi), (0, 0, \sin 5\phi)\}$ \\
+\hline
+\end{tabular}
+
+% antisymmetric spin-orbit vector g(k) (odd, axial), A1 multiplicities for |m| <= 6: m = 1: in-plane 0, d_z 0, m = 3: in-plane 0, d_z 0, m = 5: in-plane 1, d_z 0; g ~ (sin(5*phi), cos(5*phi), 0)
+% restriction D6d -> D2d (-42m; S4 = S12^3, two-fold axis at 15 deg): A1 -> A1, A2 -> A2, B1 -> B1, B2 -> B2, E1 -> E, E2 -> B1 + B2, E3 -> E, E4 -> A1 + A2, E5 -> E
+% orbit of an in-plane field direction (H -> -H included): [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330] deg; field-angle period 30 deg

@@ -5,6 +5,8 @@
     beyond32 gl      [--fast]                         Ginzburg-Landau summary on stdout
     beyond32 check   [--fast]                         recompute the key numbers and compare them
                                                       with the values quoted in the paper
+    beyond32 d6d                                      Appendix B: the point group D6d of the
+                                                      Ta1.6Te quasicrystal and Table 10
 """
 from __future__ import annotations
 
@@ -27,7 +29,7 @@ _REQUIRED_KEYS = {"package": ("version",), "groups": ("I", "2I"),
                   "double_group": ("eq12", "eq13"),
                   "gl": ("sym2", "relations", "weak_coupling_minima", "G_ground_state", "G_stratum",
                          "isotropy", "H_candidates"),
-                  "d12": ("residues", "nodes", "sym2", "weak_coupling")}
+                  "d6d": ("table10", "asoc", "restriction_D2d", "field_orbit")}
 
 
 def _load_results(path: str | None):
@@ -128,6 +130,48 @@ def cmd_gl(args) -> int:
     return 0
 
 
+def _fmt_function(f) -> str:
+    """A basis function of results.json ('cos(2*phi)' or ['sin(5*phi)', 'cos(5*phi)', '0'])."""
+    return "(" + ", ".join(f) + ")" if isinstance(f, list) else str(f)
+
+
+def cmd_d6d(args) -> int:
+    from . import d6d
+
+    s = d6d.summary()
+    f = s["facts"]
+    print(f"D6d = -12m2, the point group of the Ta1.6Te dodecagonal quasicrystal (Yamamoto 2004): "
+          f"order {f['order']}, {f['n_classes']} classes")
+    print(f"  inversion: {f['inversion']}; horizontal mirror: {f['horizontal_mirror']}; true 12-fold rotation: "
+          f"{f['true_twelvefold_rotation']} (S12 has order {f['S12_order']}, largest proper rotation order "
+          f"{f['max_proper_rotation_order']})")
+    print(f"  mirror planes contain the directions {f['mirror_directions_deg']} deg (framework edges); "
+          f"two-fold axes at {f['twofold_axes_deg']} deg")
+    ct = s["character_table"]
+    print("\nCharacter table (classes: " + ", ".join(f"{n} {c}" if n > 1 else c for c, n in zip(ct["classes"], ct["sizes"])) + "):")
+    for row in ct["rows"]:
+        print(f"  {row['irrep']:3s} " + " ".join(f"{x:>8s}" for x in row["chars"]))
+    print("\nTable 10: pair functions on the in-plane circle (singlet psi -> psi(g^-1 k); triplet d -> det(g) g d(g^-1 k))")
+    for key, title in (("singlet", "singlet psi(phi)"), ("triplet_inplane", "triplet, in-plane d"),
+                       ("triplet_z", "triplet, d_z")):
+        print(f"  {title}:")
+        for sec in s[key]:
+            print(f"    m = {sec['m']}: {sec['irreps']}")
+            for irrep, funcs in sec["basis"].items():
+                print(f"      {irrep:3s} " + "; ".join(_fmt_function(fn) for fn in funcs))
+    a = s["asoc"]
+    print("\nAntisymmetric spin-orbit vector g(k) (odd, axial), A1 multiplicities for |m| <= 6: "
+          + ", ".join(f"m = {m}: in-plane {v['inplane']}, d_z {v['z']}" for m, v in a["A1_content"].items()))
+    print(f"  g ~ {_fmt_function(a['g'])}")
+    print("\nRestriction D6d -> D2d (-42m; S4 = S12^3, two-fold axis at 15 deg):")
+    for k, v in s["restriction_D2d"]["table"].items():
+        print(f"  {k:3s} -> {v}")
+    fo = s["field_orbit"]
+    print(f"\nOrbit of an in-plane field direction (H -> -H included): {fo['angles_deg']} deg; "
+          f"field-angle period {fo['period_deg']} deg")
+    return 0
+
+
 def _reference_checks(res):
     """(name, computed, expected) triples for the values quoted in the paper."""
     R = []
@@ -179,9 +223,17 @@ def _reference_checks(res):
     R.append(("Y21 about C5", [round(hc["Y21 about C5"][k], 4) for k in ("N2", "N4G", "N4H", "ReC")],
               [0.6122, 0.7619, 0.0544, -0.1825]))
     R.append(("cyclic Im C", round(hc["cyclic (T)"]["ImC"], 4), -0.6186))
-    d = res["d12"]
-    R.append(("D12 m=6", [r["irreps"] for r in d["residues"] if r["residue"] == 6][0], "B1 + B2"))
-    R.append(("D12 circle ratios", [d["weak_coupling"]["real"], d["weak_coupling"]["chiral"]], ["3/2", "1"]))
+    d = res["d6d"]
+    R.append(("D6d: order, classes, inversion, sigma_h, true C12",
+              [d["facts"][k] for k in ("order", "n_classes", "inversion", "horizontal_mirror", "true_twelvefold_rotation")],
+              [24, 9, False, False, False]))
+    R.append(("D6d singlet m = 0, 2, 4, 6", [r["irreps"] for r in d["singlet"]], ["A1", "E2", "E4", "B1 + B2"]))
+    R.append(("D6d triplet in-plane m = 1, 3, 5", [r["irreps"] for r in d["triplet_inplane"]],
+              ["B1 + B2 + E4", "E2 + E4", "A1 + A2 + E2"]))
+    R.append(("D6d triplet d_z m = 1, 3, 5", [r["irreps"] for r in d["triplet_z"]], ["E1", "E3", "E5"]))
+    R.append(("D6d spin-orbit vector", d["asoc"]["g"], ["sin(5*phi)", "cos(5*phi)", "0"]))
+    R.append(("D6d E2, E4 -> D2d", [d["restriction_D2d"]["table"][k] for k in ("E2", "E4")], ["B1 + B2", "A1 + A2"]))
+    R.append(("D6d field-angle period (deg)", d["field_orbit"]["period_deg"], 30))
     return R
 
 
@@ -220,6 +272,8 @@ def main(argv=None) -> int:
     c = sub.add_parser("check", help="recompute and compare with the values quoted in the paper")
     c.add_argument("--fast", action="store_true", help="skip the optional slow cross-checks")
     c.set_defaults(func=cmd_check)
+    dcmd = sub.add_parser("d6d", help="print Appendix B: the point group D6d, its character table and Table 10")
+    dcmd.set_defaults(func=cmd_d6d)
     args = p.parse_args(argv)
     return args.func(args)
 

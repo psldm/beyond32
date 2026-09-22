@@ -1,7 +1,7 @@
 """Collect every number of the paper into one JSON-serialisable dictionary (results.json).
 
 ``collect(fast=False)`` runs the whole pipeline (groups -> harmonics -> molien ->
-restrictions -> shells -> double group -> Ginzburg-Landau -> D12) and returns plain Python
+restrictions -> shells -> double group -> Ginzburg-Landau -> D6d) and returns plain Python
 data: strings for exact numbers (sympy), floats for the numerical minimisations, lists for
 vectors.  ``beyond32 all`` writes it to ``results.json``; ``latex.write_tables`` turns it
 into the LaTeX fragments of ``tables/``.
@@ -208,7 +208,7 @@ def gl_section(fast: bool = False) -> Dict[str, Any]:
 
 def collect(fast: bool = False, lmax: int = 6) -> Dict[str, Any]:
     """Run everything and return the results dictionary (JSON-serialisable)."""
-    from . import d12, double_group, molien, restrictions, shells
+    from . import d6d, double_group, molien, restrictions, shells
 
     timings: Dict[str, float] = {}
     res: Dict[str, Any] = {"package": {"name": "beyond32", "version": __version__,
@@ -232,7 +232,7 @@ def collect(fast: bool = False, lmax: int = 6) -> Dict[str, Any]:
     timed("shells", lambda: {"table": shells.shells_table(), "rows": shells.format_shells_table()})
     timed("double_group", double_group.summary)
     timed("gl", lambda: gl_section(fast))
-    timed("d12", d12.summary)
+    timed("d6d", d6d.summary)
     res["package"]["runtime_seconds"] = timings
     res["package"]["runtime_total_seconds"] = round(sum(timings.values()), 2)
     return res

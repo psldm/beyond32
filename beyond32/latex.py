@@ -2,7 +2,7 @@
 
 ``write_tables(results, outdir)`` writes one ``.tex`` file per table, named after the
 paper's labels (tab_charI, tab_char2I, tab_branching, tab_shells, tab_restrict, tab_GL,
-tab_states, tab_Hcand, tab_D12) plus the displayed data of Eqs. (4)-(11) (eq_bases),
+tab_states, tab_Hcand, tab_D6d) plus the displayed data of Eqs. (4)-(11) (eq_bases),
 (12)-(13) (tab_double_group), (15)-(16) (tab_molien) and (18)-(23) (eq_invariants).  Each
 fragment is a ``tabular`` (or ``align*``) environment that can be ``\\input`` into a
 ``table`` float; the caption text of the paper is reproduced as a comment line.
@@ -16,7 +16,7 @@ from fractions import Fraction
 from typing import Any, Dict, List
 
 TABLE_FILES = ("tab_charI", "tab_char2I", "tab_branching", "tab_shells", "tab_restrict", "tab_GL",
-               "tab_states", "tab_Hcand", "tab_D12", "tab_molien", "tab_double_group",
+               "tab_states", "tab_Hcand", "tab_D6d", "tab_molien", "tab_double_group",
                "eq_bases", "eq_invariants")
 
 
@@ -306,40 +306,50 @@ def tab_Hcand(res) -> str:
     return "\n".join(lines) + "\n"
 
 
-def tab_D12(res) -> str:
-    d = res["d12"]
-    lines = ["% Section 10 ('Appendix 10' in the paper's cross-references): D12 -- assignment of the in-plane harmonics e^{+-i m phi} to irreps by m mod 12 (Eq. 24), enforced nodes, Sym^2 E_m",
-             "% residue 0 stands for m = 12, 24, ...: the constant m = 0 alone is A_1, A_2 (sin m phi) first appears at m = 12",
-             r"\begin{tabular}{ll}", r"\hline", r"$m \bmod 12$ & irreps \\", r"\hline"]
-    for r in d["residues"]:
-        note = r"\ (m \ge 12;\ m = 0:\ A_1)" if r["residue"] == 0 else ""
-        lines.append(f"{r['residue']} & ${_tex_d12_dec(r['irreps'])}{note}$ \\\\")
-    lines += [r"\hline", r"\end{tabular}", "",
-              r"\begin{tabular}{lccc}", r"\hline",
-              r"irrep & node on $C_2'$ & node on $C_2''$ & node on the 12-fold axis \\", r"\hline"]
-    for r in d["nodes"]:
-        c2p, c2pp = r["C2'"], r["C2''"]
-        lines.append(f"${tex_irrep(r['irrep'])}$ & {c2p} & {c2pp} & {r['axis']} \\\\")
-    lines += [r"\hline", r"\end{tabular}", "",
-              r"\begin{tabular}{llc}", r"\hline", r"$E_m$ & $\mathrm{Sym}^2 E_m$ & quartic invariants \\", r"\hline"]
-    for r in d["sym2"]:
-        lines.append(f"${tex_irrep(r['irrep'])}$ & ${_tex_d12_dec(r['Sym^2'])}$ & {r['quartic invariants']} \\\\")
-    lines += [r"\hline", r"\end{tabular}", "",
-              f"% weak coupling on the circle: R = {d['weak_coupling']['real']} (real), {d['weak_coupling']['chiral']} (chiral)"]
+def _tex_trig(s: str) -> str:
+    """'cos(5*phi)' -> '\\cos 5\\phi', '-sin(phi)' -> '-\\sin\\phi'; '0', '1' unchanged."""
+    m = re.fullmatch(r"(-?)(cos|sin)\((?:(\d+)\*)?phi\)", str(s).strip())
+    if m:
+        sign, fn, k = m.groups()
+        return f"{sign}\\{fn}" + (f" {k}\\phi" if k else r"\phi")
+    return str(s)
+
+
+def _tex_pair_function(f) -> str:
+    """A scalar 'cos(2*phi)' or a d-vector ['sin(5*phi)', 'cos(5*phi)', '0'] (results.json form)."""
+    if isinstance(f, list):
+        return "(" + ", ".join(_tex_trig(x) for x in f) + ")"
+    return _tex_trig(f)
+
+
+def _tex_basis(funcs) -> str:
+    """One basis: a single function, or the pair of an E irrep in braces."""
+    items = [_tex_pair_function(f) for f in funcs]
+    return items[0] if len(items) == 1 else r"\{" + ", ".join(items) + r"\}"
+
+
+def tab_D6d(res) -> str:
+    """Table 10 (Appendix B): irrep | singlet part | triplet part, for the point group D6d."""
+    d = res["d6d"]
+    lines = ["% Table 10 (Appendix B): pairing functions on the in-plane circle of the dodecagonal point group D6d = -12m2 of Ta1.6Te (Yamamoto 2004): singlet psi(phi) (even m <= 6) and triplet d-vector (odd m <= 5) per irrep",
+             "% singlet: psi -> psi(g^-1 k); triplet: d = (d_x, d_y, d_z) -> det(g) g d(g^-1 k); basis functions from the exact isotypic projectors (reduced row echelon form); -- = nothing with |m| <= 6",
+             r"\begin{tabular}{lll}", r"\hline", r"irrep & singlet part & triplet part \\", r"\hline"]
+    for r in d["table10"]:
+        singlet = ";\\ ".join(_tex_basis(s["functions"]) for s in r["singlet"])
+        triplet = ";\\ ".join(_tex_basis(t["functions"]) for t in r["triplet"])
+        cells = [f"${x}$" if x else "--" for x in (singlet, triplet)]
+        lines.append(f"${tex_irrep(r['irrep'])}$ & {cells[0]} & {cells[1]} \\\\")
+    lines += [r"\hline", r"\end{tabular}", ""]
+    a = d["asoc"]
+    content = ", ".join(f"m = {m}: in-plane {v['inplane']}, d_z {v['z']}" for m, v in a["A1_content"].items())
+    lines.append(f"% antisymmetric spin-orbit vector g(k) (odd, axial), A1 multiplicities for |m| <= 6: {content}; "
+                 f"g ~ ({', '.join(a['g'])})")
+    lines.append("% restriction D6d -> D2d (-42m; S4 = S12^3, two-fold axis at 15 deg): "
+                 + ", ".join(f"{k} -> {v}" for k, v in d["restriction_D2d"]["table"].items()))
+    fo = d["field_orbit"]
+    lines.append(f"% orbit of an in-plane field direction (H -> -H included): {fo['angles_deg']} deg; "
+                 f"field-angle period {fo['period_deg']} deg")
     return "\n".join(lines) + "\n"
-
-
-def _tex_d12_dec(s: str) -> str:
-    parts = [p.strip() for p in s.split("+")]
-    out = []
-    for p in parts:
-        m = re.fullmatch(r"(\d*)\s*([A-Z]\d?)", p)
-        if m:
-            mult, irr = m.groups()
-            out.append((f"{mult}\\," if mult else "") + tex_irrep(irr))
-        else:
-            out.append(p)
-    return r" \oplus ".join(out)
 
 
 def tab_molien(res) -> str:
@@ -440,7 +450,7 @@ def _tex_inv(k: str) -> str:
 
 EMITTERS = {"tab_charI": tab_charI, "tab_char2I": tab_char2I, "tab_branching": tab_branching,
             "tab_shells": tab_shells, "tab_restrict": tab_restrict, "tab_GL": tab_GL, "tab_states": tab_states,
-            "tab_Hcand": tab_Hcand, "tab_D12": tab_D12, "tab_molien": tab_molien,
+            "tab_Hcand": tab_Hcand, "tab_D6d": tab_D6d, "tab_molien": tab_molien,
             "tab_double_group": tab_double_group, "eq_bases": eq_bases, "eq_invariants": eq_invariants}
 
 

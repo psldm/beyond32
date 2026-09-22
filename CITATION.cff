@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this code, please cite both the paper and the software."
 type: software
 title: "beyond32: superconducting pairing channels of the icosahedral group"
-version: 1.0.0
-date-released: 2026-09-05
+version: 1.1.0
+date-released: 2026-09-22
 license: MIT
 repository-code: "https://github.com/psldm/beyond32"
 doi: "10.5281/zenodo.22335534"
@@ -16,7 +16,10 @@ abstract: >-
   basis functions, Molien series and the S^3/2I spectrum, restrictions to approximant
   subgroups, permutation representations on cluster shells, double-group branching, and
   the Ginzburg-Landau invariants, weak-coupling minima, symmetry-fixed states and
-  enforced nodes of the T1, T2, G and H channels; plus the dodecagonal group D12.
+  enforced nodes of the T1, T2, G and H channels; plus the dodecagonal point group D6d
+  (-12m2) of the Ta1.6Te quasicrystal: singlet and triplet pair functions on the in-plane
+  circle, the antisymmetric spin-orbit vector, the restriction to D2d and the in-plane
+  field orbit.
 keywords:
   - icosahedral group
   - quasicrystal

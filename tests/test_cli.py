@@ -64,3 +64,16 @@ def test_cli_check_reproduces_the_paper(capsys):
     assert main(["check", "--fast"]) == 0
     out = capsys.readouterr().out
     assert "FAIL" not in out and "all reference values reproduced" in out
+
+
+def test_cli_d6d_prints_appendix_B(capsys):
+    from beyond32.cli import main
+
+    assert main(["d6d"]) == 0
+    out = capsys.readouterr().out
+    assert "order 24, 9 classes" in out
+    assert "inversion: False; horizontal mirror: False; true 12-fold rotation: False" in out
+    assert "m = 6: B1 + B2" in out and "m = 1: B1 + B2 + E4" in out and "m = 5: A1 + A2 + E2" in out
+    assert "g ~ (sin(5*phi), cos(5*phi), 0)" in out
+    assert "E4  -> A1 + A2" in out and "E2  -> B1 + B2" in out
+    assert "field-angle period 30 deg" in out
